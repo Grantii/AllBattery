@@ -12,6 +12,9 @@ import tailwindcss from '@tailwindcss/vite';
  */
 export default defineConfig({
   plugins: [tailwindcss()],
+  // Die Favicons aus `public/` gehoeren nur zur Web-App (dist/), nicht ins
+  // HACS-Bundle - deshalb beim Panel-Build nicht mitkopieren.
+  publicDir: false,
   build: {
     outDir: 'custom_components/allbattery/frontend',
     emptyOutDir: true,
