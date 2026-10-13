@@ -45,6 +45,14 @@ body {
   );
 }
 
+/*
+ * Tailwind v4 setzt fuer Buttons keinen Zeiger-Cursor mehr. Hier zurueckholen,
+ * damit klickbare Elemente (Filter-Kacheln, Buttons) auch so aussehen.
+ */
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 /* Fokus-Stile fuer Tastaturbedienung */
 :where(button, input, select, a):focus-visible {
   outline: 2px solid rgb(56 189 248);

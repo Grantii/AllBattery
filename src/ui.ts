@@ -148,36 +148,77 @@ function renderHeader(view: AppView): string {
   </header>`;
 }
 
-function renderSummary(view: AppView): string {
-  const allActive = view.filter.groups.length === 0;
-  const allBorder = allActive ? 'border-sky-500/60' : 'border-slate-800';
-  const allTile = `
-      <button type="button" data-action="clear-groups" aria-pressed="${allActive}"
-        class="flex flex-col items-start gap-1 rounded-2xl border ${allBorder} bg-slate-900/60 p-4 text-left transition hover:border-slate-600">
-        <span class="inline-flex items-center gap-2 text-xs font-medium text-slate-300">
-          <span class="h-2 w-2 rounded-full bg-sky-400"></span>Alle
-        </span>
-        <span class="text-2xl font-semibold tabular-nums text-slate-100">${view.items.length}</span>
-      </button>`;
+/** Eine Filter-Kachel (Gruppe oder "Alle") mit deutlichem Aktiv-Zustand. */
+function renderFilterTile(options: {
+  action: string;
+  label: string;
+  count: number;
+  active: boolean;
+  dotClass: string;
+}): string {
+  const { action, label, count, active, dotClass } = options;
+  const stateClasses = active
+    ? 'border-sky-500 bg-sky-500/15 ring-2 ring-sky-500/40'
+    : 'border-slate-800 bg-slate-900/60 hover:border-sky-500/40 hover:bg-slate-800/60';
+  const labelClasses = active ? 'text-sky-100' : 'text-slate-300';
+  const countClasses = active ? 'text-white' : 'text-slate-100';
+  const checkmark = active
+    ? '<span class="ml-auto font-bold text-sky-300" aria-hidden="true">&#10003;</span>'
+    : '';
 
-  const tiles = GROUP_ORDER.map((group) => {
-    const active = view.filter.groups.includes(group);
-    const border = active ? 'border-sky-500/60' : 'border-slate-800';
-    return `
-      <button type="button" data-action="toggle-group" data-group="${group}" aria-pressed="${active}"
-        class="flex flex-col items-start gap-1 rounded-2xl border ${border} bg-slate-900/60 p-4 text-left transition hover:border-slate-600">
-        <span class="inline-flex items-center gap-2 text-xs font-medium text-slate-300">
-          <span class="h-2 w-2 rounded-full ${GROUP_STYLES[group].dot}"></span>${GROUP_LABELS[group]}
+  return `
+      <button type="button" ${action} aria-pressed="${active}"
+        class="flex cursor-pointer flex-col items-start gap-1 rounded-2xl border ${stateClasses} p-4 text-left transition">
+        <span class="flex w-full items-center gap-2 text-xs font-medium ${labelClasses}">
+          <span class="h-2 w-2 shrink-0 rounded-full ${dotClass}"></span>
+          <span class="truncate">${label}</span>
+          ${checkmark}
         </span>
-        <span class="text-2xl font-semibold tabular-nums text-slate-100">${view.counts[group]}</span>
+        <span class="text-2xl font-semibold tabular-nums ${countClasses}">${count}</span>
       </button>`;
-  }).join('');
+}
+
+function renderSummary(view: AppView): string {
+  const activeGroups = view.filter.groups;
+  const allActive = activeGroups.length === 0;
+
+  const allTile = renderFilterTile({
+    action: 'data-action="clear-groups"',
+    label: 'Alle',
+    count: view.items.length,
+    active: allActive,
+    dotClass: 'bg-sky-400',
+  });
+
+  const tiles = GROUP_ORDER.map((group) =>
+    renderFilterTile({
+      action: `data-action="toggle-group" data-group="${group}"`,
+      label: GROUP_LABELS[group],
+      count: view.counts[group],
+      active: activeGroups.includes(group),
+      dotClass: GROUP_STYLES[group].dot,
+    }),
+  ).join('');
+
+  const filteredCount = view.items.filter((item) => activeGroups.includes(item.group)).length;
+
+  const status = allActive
+    ? `<p class="mb-2 text-xs text-slate-400">
+        Klicke eine Gruppe, um nur diese Batterien anzuzeigen - mehrere Gruppen lassen sich kombinieren.
+      </p>`
+    : `<p class="mb-2 flex flex-wrap items-center gap-2 text-xs text-slate-300">
+        <span class="font-semibold text-sky-300">Filter aktiv:</span>
+        <span>${activeGroups.map((group) => GROUP_LABELS[group]).join(' &middot; ')}</span>
+        <span class="text-slate-400">(${filteredCount} von ${view.items.length} Batterien)</span>
+        <button type="button" data-action="clear-groups"
+          class="cursor-pointer rounded-full border border-slate-700 px-2 py-0.5 text-xs text-slate-200 transition hover:border-sky-500/60 hover:text-white">
+          Alle anzeigen
+        </button>
+      </p>`;
 
   return `
   <section aria-label="Uebersicht und Filter">
-    <p class="mb-2 text-xs text-slate-400">
-      Klicke eine Gruppe, um nur diese Batterien anzuzeigen - mehrere Gruppen lassen sich kombinieren.
-    </p>
+    ${status}
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-5">${allTile}${tiles}</div>
   </section>`;
 }
