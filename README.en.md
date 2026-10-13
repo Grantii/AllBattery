@@ -6,6 +6,8 @@ how much longer a battery will last.
 
 **Language:** [Deutsch](README.md) · **English**
 
+[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration) [![Requires Home Assistant 2025.1.0+](https://img.shields.io/badge/Home%20Assistant-2025.1.0%2B-18BCF2.svg)](https://www.home-assistant.io/)
+
 ## Features
 
 - **Automatic detection** of all battery entities (`device_class: battery`) – both percentage

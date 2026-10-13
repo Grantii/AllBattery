@@ -6,6 +6,8 @@ gruppiert sie nach Zustand und schätzt, wie lange ein Akku noch hält.
 
 **Sprache:** **Deutsch** · [English](README.en.md)
 
+[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration) [![Erfordert Home Assistant 2025.1.0+](https://img.shields.io/badge/Home%20Assistant-2025.1.0%2B-18BCF2.svg)](https://www.home-assistant.io/)
+
 ## Funktionen
 
 - **Automatische Erkennung** aller Batterie-Entitäten (`device_class: battery`) – sowohl Sensoren
