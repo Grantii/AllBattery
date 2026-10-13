@@ -27,17 +27,23 @@ how much longer a battery will last.
 
 ## Installation
 
-### Recommended: sidebar panel via HACS
+> **Requirement: [HACS](https://hacs.xyz/) (Home Assistant Community Store).**
+> Not installed yet? → [Install HACS](https://hacs.xyz/docs/use/download/download/)
+> (takes just a few minutes). You can also use AllBattery without HACS – see *Without HACS* below.
 
-1. Install HACS (if you have not already).
-2. In HACS: **Integrations** → three-dot menu → **Custom repositories** →
+### Variant 1: sidebar panel via HACS (recommended)
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Grantii&repository=AllBattery&category=integration)
+
+1. **Add the repository to HACS** – use the button above, or manually:
+   HACS → **Integrations** → three-dot menu → **Custom repositories** →
    `https://github.com/Grantii/AllBattery` → category **Integration** → *Add*.
-3. Install AllBattery from HACS.
-4. In Home Assistant: *Settings → Devices & Services → **Add integration** → **AllBattery***.
+2. **Install:** open AllBattery in HACS and select *Download*.
+3. **Set up:** *Settings → Devices & Services → **Add integration** → **AllBattery***.
 
-A new **Batteries** entry appears in the sidebar – that is all.
+A new **Batteries** entry appears in the sidebar. Future updates arrive automatically via HACS.
 
-### Alternative: embed as a web page in a dashboard
+### Variant 2: without HACS – embed as a web page in a dashboard
 
 1. Build the app and copy it into the `www` folder of your Home Assistant configuration:
 

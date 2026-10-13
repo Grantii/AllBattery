@@ -25,18 +25,23 @@ gruppiert sie nach Zustand und schätzt, wie lange ein Akku noch hält.
 
 ## Installation
 
-### Empfohlen: als Sidebar-Panel über HACS
+> **Voraussetzung: [HACS](https://hacs.xyz/) (Home Assistant Community Store).**
+> Noch nicht installiert? → [HACS installieren](https://hacs.xyz/docs/use/download/download/)
+> (dauert nur wenige Minuten). Ohne HACS geht es auch – siehe *Ohne HACS* weiter unten.
 
-1. HACS installieren (falls noch nicht vorhanden).
-2. In HACS: **Integrationen** → Drei-Punkte-Menü → **Benutzerdefinierte Repositories** →
+### Variante 1: als Sidebar-Panel über HACS (empfohlen)
+
+[![Öffne deine Home-Assistant-Instanz und öffne das Repository im Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Grantii&repository=AllBattery&category=integration)
+
+1. **Repository in HACS hinzufügen** – über den Button oben oder manuell:
+   HACS → **Integrationen** → Drei-Punkte-Menü → **Benutzerdefinierte Repositories** →
    `https://github.com/Grantii/AllBattery` → Kategorie **Integration** → *Hinzufügen*.
-3. AllBattery in HACS installieren.
-4. In Home Assistant: *Einstellungen → Geräte & Dienste → **Integration hinzufügen** →
-   **AllBattery***.
+2. **Installieren:** AllBattery in HACS öffnen und *Herunterladen* wählen.
+3. **Einrichten:** *Einstellungen → Geräte & Dienste → **Integration hinzufügen** → **AllBattery***.
 
-Danach erscheint **Batterien** in der Seitenleiste – fertig.
+Danach erscheint **Batterien** in der Seitenleiste. Updates kommen später automatisch über HACS.
 
-### Alternativ: als Webseite in ein Dashboard einbinden
+### Variante 2: ohne HACS – als Webseite in ein Dashboard einbinden
 
 1. Build erstellen und in den `www`-Ordner der Home-Assistant-Konfiguration kopieren:
 
