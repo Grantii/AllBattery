@@ -48,6 +48,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await _async_register_panel(hass, entry)
 
+    _LOGGER.info(
+        "AllBattery bereit: Panel unter /%s registriert, Frontend-Dateien unter %s (Verzeichnis: %s)",
+        URL_PATH,
+        MODULE_URL,
+        frontend_path,
+    )
+
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     return True
 

@@ -20,6 +20,8 @@ import type {
  */
 interface HassFrontend {
   states: Record<string, HassState>;
+  /** Angemeldeter Benutzer (wird fuer die Admin-Pruefung der Template-API gebraucht). */
+  user?: { is_admin?: boolean; is_owner?: boolean };
   callApi<T>(method: string, path: string, parameters?: unknown): Promise<T>;
 }
 
@@ -64,6 +66,14 @@ class HassDataSource implements DataSource {
 
   async getAreas(): Promise<Record<string, string>> {
     if (this.areasLoaded) return this.areas;
+
+    // Die Template-API erfordert Administratorrechte. Ohne Admin wird sie gar
+    // nicht erst aufgerufen - sonst wuerde sie mit HTTP 403 fehlschlagen.
+    const user = this.hass.user;
+    if (user && user.is_admin !== true && user.is_owner !== true) {
+      this.areasLoaded = true;
+      return {};
+    }
 
     const template = [
       "{% for s in states if s.attributes.device_class == 'battery' %}",
