@@ -101,7 +101,3 @@ App eingegeben; beides bleibt lokal im Browser gespeichert.
 ## Lizenz
 
 MIT – siehe [LICENSE](LICENSE).
-
----
-
-*Entwicklung, Projektstruktur und Release-Hinweise: siehe [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)*

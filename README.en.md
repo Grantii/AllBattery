@@ -103,8 +103,3 @@ app; both stay in your browser's local storage.
 ## License
 
 MIT – see [LICENSE](LICENSE).
-
----
-
-*Development, project structure and release notes: see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
-(currently in German)*
