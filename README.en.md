@@ -120,12 +120,14 @@ The logo ships in two variants and is picked up automatically:
 | `public/favicon.png`, `public/apple-touch-icon.png` | 48 / 180 px | browser tab and iOS home screen of the web app |
 | `src/logo.ts` | data URI | logo in the header of the panel and the web app |
 
-- **Use your own logo:** replace `assets/Logo.png` with your logo (square, black artwork on
-  a white or transparent background) and run `npm run brand` (Windows/PowerShell 7). The
-  script generates all files, including the white variant for the dark theme.
-- **Why no `logo.png`?** The logo is square - according to the Home Assistant brand
-  guidelines only the icon files are shipped in that case, and Home Assistant uses the icon
-  as the logo fallback automatically. From Home Assistant 2026.3 onwards, HA loads local
+- **Use your own logo:** replace `assets/Logo.png` with your logo (black artwork on a white
+  or transparent background, square or rectangular) and run `npm run brand`
+  (Windows/PowerShell 7). The script generates all files, including the white variant for
+  the dark theme. The aspect ratio is preserved (the artwork is fitted, never squeezed) and
+  transparent margins are trimmed automatically.
+- **Why no `logo.png`?** According to the Home Assistant brand guidelines a square icon
+  means only the icon files are shipped, and Home Assistant uses the icon as the logo
+  fallback automatically. From Home Assistant 2026.3 onwards, HA loads local
   brand images from `custom_components/<domain>/brand/` directly (older versions ignore the
   folder).
 - **Sidebar icon** of the panel: `SIDEBAR_ICON` in `custom_components/allbattery/const.py`

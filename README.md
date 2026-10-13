@@ -119,12 +119,14 @@ Das Logo liegt in zwei Varianten im Repo und wird automatisch verwendet:
 | `src/logo.ts` | Data-URI | Logo in der Kopfzeile von Panel und Web-App |
 
 - **Eigenes Logo einsetzen:** `assets/Logo.png` durch das eigene Logo ersetzen
-  (quadratisch, schwarzes Artwork auf weissem oder transparentem Hintergrund) und
-  `npm run brand` ausfuehren (Windows/PowerShell 7). Das Skript erzeugt daraus alle
-  Dateien - inklusive der weissen Variante fuer das dunkle Design.
-- **Warum kein `logo.png`?** Das Logo ist quadratisch - laut Home-Assistant-Brand-Guidelines
-  werden dann nur die Icon-Dateien abgelegt, Home Assistant nutzt das Icon automatisch als
-  Logo-Fallback. Ab Home Assistant 2026.3 laedt HA lokale Brand-Bilder aus
+  (schwarzes Artwork auf weissem oder transparentem Hintergrund, quadratisch oder
+  rechteckig) und `npm run brand` ausfuehren (Windows/PowerShell 7). Das Skript erzeugt
+  daraus alle Dateien - inklusive der weissen Variante fuer das dunkle Design. Das
+  Seitenverhaeltnis bleibt dabei erhalten (das Motiv wird eingepasst, nicht gestaucht)
+  und transparente Raender werden automatisch abgeschnitten.
+- **Warum kein `logo.png`?** Laut Home-Assistant-Brand-Guidelines werden bei einem
+  quadratischen Icon nur die Icon-Dateien abgelegt, Home Assistant nutzt das Icon
+  automatisch als Logo-Fallback. Ab Home Assistant 2026.3 laedt HA lokale Brand-Bilder aus
   `custom_components/<domain>/brand/` direkt (aeltere Versionen ignorieren den Ordner).
 - **Sidebar-Symbol** des Panels: `SIDEBAR_ICON` in `custom_components/allbattery/const.py`
   (Material Design Icon, Standard `mdi:battery-heart-variant`).

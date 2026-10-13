@@ -4,8 +4,11 @@
   und die Web-App.
 
 .DESCRIPTION
-  Quelle: assets/Logo.png (quadratisches Logo, schwarzes Artwork auf weissem
-  oder transparentem Hintergrund).
+  Quelle: assets/Logo.png (schwarzes Artwork auf weissem oder transparentem
+  Hintergrund, quadratisch oder rechteckig). Das Seitenverhaeltnis des
+  Artworks bleibt immer erhalten - es wird in die quadratischen Ziele
+  eingepasst und zentriert, nie gestaucht. Transparente Raender werden
+  automatisch abgeschnitten, das Motiv sitzt also formatfuellend.
 
   Erzeugt:
     custom_components/allbattery/brand/icon.png          256 x 256  helles Design
@@ -101,21 +104,81 @@ function Save-Png {
   Write-Host ("  {0} ({1} Bytes)" -f $info.Name, $info.Length)
 }
 
-function New-ArtworkBitmap {
-  param([System.Drawing.Bitmap]$Artwork, [int]$Size)
+function Get-ContentBounds {
+  param([System.Drawing.Bitmap]$Bitmap, [int]$Threshold = 16)
 
+  # Ermittelt den sichtbaren Bereich des Artworks (Alpha >= Threshold), damit
+  # transparente Raender aus dem Quellbild nicht als Leerraum uebernommen
+  # werden.
+  $rect = New-Object System.Drawing.Rectangle(0, 0, $Bitmap.Width, $Bitmap.Height)
+  $data = $Bitmap.LockBits($rect, [System.Drawing.Imaging.ImageLockMode]::ReadOnly, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+  try {
+    $stride = $data.Stride
+    $bytes = New-Object byte[] ($stride * $Bitmap.Height)
+    [System.Runtime.InteropServices.Marshal]::Copy($data.Scan0, $bytes, 0, $bytes.Length)
+  }
+  finally {
+    $Bitmap.UnlockBits($data)
+  }
+
+  $minX = $Bitmap.Width; $maxX = -1
+  $minY = $Bitmap.Height; $maxY = -1
+
+  for ($y = 0; $y -lt $Bitmap.Height; $y++) {
+    $row = $y * $stride
+    for ($x = 0; $x -lt $Bitmap.Width; $x++) {
+      if ($bytes[$row + ($x * 4) + 3] -ge $Threshold) {
+        if ($x -lt $minX) { $minX = $x }
+        if ($x -gt $maxX) { $maxX = $x }
+        if ($y -lt $minY) { $minY = $y }
+        if ($y -gt $maxY) { $maxY = $y }
+      }
+    }
+  }
+
+  if ($maxX -lt 0) { throw 'Im Quellbild wurde kein Artwork gefunden (alle Pixel transparent).' }
+
+  return New-Object System.Drawing.Rectangle($minX, $minY, ($maxX - $minX + 1), ($maxY - $minY + 1))
+}
+
+function New-FittedBitmap {
+  param(
+    [System.Drawing.Bitmap]$Artwork,
+    [System.Drawing.Rectangle]$Bounds,
+    [int]$Size,
+    [double]$Padding = 0.0
+  )
+
+  # "contain": der sichtbare Ausschnitt ($Bounds) wird unter Beibehaltung des
+  # Seitenverhaeltnisses in das Quadrat eingepasst und zentriert. $Padding ist
+  # der Anteil je Seite, der als Sicherheitsabstand frei bleibt.
   $bitmap = New-Object System.Drawing.Bitmap($Size, $Size, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
   $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
   $graphics.Clear([System.Drawing.Color]::Transparent)
   $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
   $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
-  $graphics.DrawImage($Artwork, 0, 0, $Size, $Size)
+
+  $available = $Size * (1.0 - (2.0 * $Padding))
+  $scale = [Math]::Min($available / $Bounds.Width, $available / $Bounds.Height)
+  $drawWidth = [int][Math]::Max(1, [Math]::Round($Bounds.Width * $scale))
+  $drawHeight = [int][Math]::Max(1, [Math]::Round($Bounds.Height * $scale))
+  $offsetX = [int][Math]::Round(($Size - $drawWidth) / 2.0)
+  $offsetY = [int][Math]::Round(($Size - $drawHeight) / 2.0)
+
+  $target = New-Object System.Drawing.Rectangle($offsetX, $offsetY, $drawWidth, $drawHeight)
+  $graphics.DrawImage($Artwork, $target, $Bounds.X, $Bounds.Y, $Bounds.Width, $Bounds.Height, [System.Drawing.GraphicsUnit]::Pixel)
   $graphics.Dispose()
   return $bitmap
 }
 
 function New-BadgeBitmap {
-  param([System.Drawing.Bitmap]$Artwork, [int]$Size, [switch]$Rounded)
+  param(
+    [System.Drawing.Bitmap]$Artwork,
+    [System.Drawing.Rectangle]$Bounds,
+    [int]$Size,
+    [switch]$Rounded,
+    [double]$Padding = 0.0
+  )
 
   $bitmap = New-Object System.Drawing.Bitmap($Size, $Size, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
   $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
@@ -141,7 +204,9 @@ function New-BadgeBitmap {
   }
   $white.Dispose()
 
-  $graphics.DrawImage($Artwork, 0, 0, $Size, $Size)
+  $artworkBitmap = New-FittedBitmap -Artwork $Artwork -Bounds $Bounds -Size $Size -Padding $Padding
+  $graphics.DrawImage($artworkBitmap, 0, 0, $Size, $Size)
+  $artworkBitmap.Dispose()
   $graphics.Dispose()
   return $bitmap
 }
@@ -165,31 +230,38 @@ export const LOGO_DATA_URI =
 }
 
 # --- Generierung --------------------------------------------------------------
+# Sicherheitsabstand je Seite fuer die Badges (Favicon, Apple-Touch-Icon,
+# Kopfzeilen-Logo): haelt das Artwork von den abgerundeten Ecken fern.
+$badgePadding = 0.08
+
 $composite = New-WhiteComposite -Path $sourcePath
 $darkArtwork = Get-Artwork -Composite $composite -Ink ([System.Drawing.Color]::Black)
 $lightArtwork = Get-Artwork -Composite $composite -Ink ([System.Drawing.Color]::White)
 
+$bounds = Get-ContentBounds -Bitmap $darkArtwork
+Write-Host ("  Quelle {0} x {1} px, sichtbares Artwork {2} x {3} px" -f $composite.Width, $composite.Height, $bounds.Width, $bounds.Height)
+
 foreach ($size in 256, 512) {
   $suffix = if ($size -eq 256) { '' } else { '@2x' }
 
-  $icon = New-ArtworkBitmap -Artwork $darkArtwork -Size $size
+  $icon = New-FittedBitmap -Artwork $darkArtwork -Bounds $bounds -Size $size
   Save-Png -Bitmap $icon -Path (Join-Path $brandDir ("icon{0}.png" -f $suffix))
   $icon.Dispose()
 
-  $darkIcon = New-ArtworkBitmap -Artwork $lightArtwork -Size $size
+  $darkIcon = New-FittedBitmap -Artwork $lightArtwork -Bounds $bounds -Size $size
   Save-Png -Bitmap $darkIcon -Path (Join-Path $brandDir ("dark_icon{0}.png" -f $suffix))
   $darkIcon.Dispose()
 }
 
-$favicon = New-BadgeBitmap -Artwork $darkArtwork -Size 48 -Rounded
+$favicon = New-BadgeBitmap -Artwork $darkArtwork -Bounds $bounds -Size 48 -Rounded -Padding $badgePadding
 Save-Png -Bitmap $favicon -Path (Join-Path $publicDir 'favicon.png')
 $favicon.Dispose()
 
-$touchIcon = New-BadgeBitmap -Artwork $darkArtwork -Size 180
+$touchIcon = New-BadgeBitmap -Artwork $darkArtwork -Bounds $bounds -Size 180 -Padding $badgePadding
 Save-Png -Bitmap $touchIcon -Path (Join-Path $publicDir 'apple-touch-icon.png')
 $touchIcon.Dispose()
 
-$headerLogo = New-BadgeBitmap -Artwork $darkArtwork -Size 96 -Rounded
+$headerLogo = New-BadgeBitmap -Artwork $darkArtwork -Bounds $bounds -Size 96 -Rounded -Padding $badgePadding
 Write-LogoModule -Bitmap $headerLogo -Path (Join-Path $srcDir 'logo.ts')
 $headerLogo.Dispose()
 
