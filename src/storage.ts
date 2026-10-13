@@ -3,8 +3,22 @@ import type { ConnectionSettings, FilterState } from './types';
 const SETTINGS_KEY = 'allbattery.settings.v1';
 const FILTER_KEY = 'allbattery.filter.v1';
 
+/**
+ * Wird die App von Home Assistant selbst ausgeliefert (Pfad beginnt mit
+ * `/local/`, z. B. als Webseiten-Karte eingebettet), ist die
+ * Home-Assistant-URL identisch mit dem Origin der Seite - dann ist keine
+ * Eingabe noetig.
+ */
+function detectHomeAssistantUrl(): string {
+  try {
+    return window.location.pathname.startsWith('/local/') ? window.location.origin : '';
+  } catch {
+    return '';
+  }
+}
+
 export const DEFAULT_SETTINGS: ConnectionSettings = {
-  url: '',
+  url: detectHomeAssistantUrl(),
   token: '',
   refreshSeconds: 60,
   showForecast: true,

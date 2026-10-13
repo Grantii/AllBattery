@@ -84,6 +84,50 @@ npm run typecheck  # nur Typpruefung
 Der Build verwendet `base: './'` und laeuft daher auch in einem Unterordner
 (z. B. GitHub Pages).
 
+## Einbindung in Home Assistant
+
+### Variante A - die App von Home Assistant ausliefern lassen (empfohlen)
+
+Dann laeuft die App unter **derselben Herkunft (Origin)** wie Home Assistant: kein CORS,
+kein Mixed-Content-Problem - und die Home-Assistant-URL wird automatisch erkannt.
+
+1. Build erzeugen und in den `www`-Ordner der Home-Assistant-Konfiguration kopieren:
+
+   ```bash
+   npm run deploy:ha -- "\\<server>\config\www"   # Windows (UNC-Pfad)
+   npm run deploy:ha -- /config/www               # Linux / HAOS-Add-on-Terminal
+   ```
+
+   Das Skript baut die App und kopiert sie nach `<HA-Config>/www/allbattery/`.
+   Alternativ den Inhalt von `dist/` manuell dorthin kopieren.
+
+2. Aufruf im Browser: `http://<dein-home-assistant>:8123/local/allbattery/`
+
+3. In Home Assistant einbinden - entweder als eigenes Sidebar-Panel:
+
+   *Einstellungen > Dashboards > Dashboard hinzufuegen > "Neues Dashboard von Grund auf"*
+   > Modus **Panel** > Karte **Webseite** > URL `http://<dein-home-assistant>:8123/local/allbattery/`
+
+   oder als Karte in ein bestehendes Dashboard (*Karte hinzufuegen > Webseite*).
+
+> Hinweis: Dateien unter `www/` sind ohne Anmeldung abrufbar. Die App selbst enthaelt aber keine
+> Zugangsdaten - URL und Token werden erst im Browser eingegeben und nur dort gespeichert.
+
+### Variante B - extern hosten (z. B. GitHub Pages)
+
+1. Build ueber GitHub Pages veroeffentlichen (Workflow `.github/workflows/pages.yml`, danach im
+   Repo unter *Settings > Pages > Source: GitHub Actions* aktivieren).
+2. Karte **Webseite** mit `https://<benutzer>.github.io/AllBattery/` hinzufuegen.
+3. Da die App dann von einer anderen Herkunft laeuft, muss ihr Origin in Home Assistant unter
+   *Einstellungen > System > Netzwerk > HTTP-Server > CORS allowed origins* eingetragen werden.
+4. Achtung: Laeuft Home Assistant ueber HTTPS, muss auch die App ueber HTTPS laufen - sonst
+   blockiert der Browser das Einbetten (Mixed Content).
+
+### Long-Lived Access Token erstellen
+
+In Home Assistant auf das eigene Profil klicken (unten links) > Tab **Sicherheit** >
+*Long-Lived Access Tokens* > **Token erstellen**. Diesen Token in AllBattery eintragen.
+
 ## Hinweise und Fehlersuche
 
 **Raeume (Bereiche):** Die Raumzuordnung wird ueber die Template-API (`POST /api/template`)
