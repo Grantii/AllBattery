@@ -57,8 +57,9 @@ AllBattery/
 │  └─ deploy-to-ha.mjs  # Build nach <HA-Config>/www/allbattery kopieren
 ├─ docs/
 │  └─ PROMPT.md     # Anforderungsbeschreibung / Projekt-Prompt
+├─ custom_components/
+│  └─ allbattery/   # HACS-Integration: Panel-Registrierung + ausgeliefertes Bundle
 ├─ hacs.json        # HACS-Manifest
-├─ AllBattery.js    # gebautes HACS-Plugin (npm run build:panel)
 ├─ index.html
 ├─ package.json
 ├─ tsconfig.json
@@ -82,10 +83,12 @@ AllBattery ist eine reine Browser-Anwendung (statische Seite):
 
 ```bash
 npm install
-npm run dev        # Dev-Server auf http://localhost:5173
-npm run build      # Typpruefung + Produktions-Build nach dist/
-npm run preview    # Build lokal testen
-npm run typecheck  # nur Typpruefung
+npm run dev         # Dev-Server auf http://localhost:5173
+npm run build       # Typpruefung + Produktions-Build nach dist/ (Standalone-App)
+npm run build:panel # Frontend-Bundle der HACS-Integration
+npm run build:all   # beides
+npm run preview     # Build lokal testen
+npm run typecheck   # nur Typpruefung
 ```
 
 Der Build verwendet `base: './'` und laeuft daher auch in einem Unterordner
@@ -130,40 +133,47 @@ kein Mixed-Content-Problem - und die Home-Assistant-URL wird automatisch erkannt
 4. Achtung: Laeuft Home Assistant ueber HTTPS, muss auch die App ueber HTTPS laufen - sonst
    blockiert der Browser das Einbetten (Mixed Content).
 
-### Variante C - als HACS-Dashboard-Plugin (Sidebar-Panel)
+### Variante C - als HACS-Integration (Sidebar-Panel, ganz ohne YAML)
 
 Die App laeuft dann als eigenes Sidebar-Panel und nutzt die angemeldete
-Home-Assistant-Sitzung: **kein Token, kein CORS** und Live-Aktualisierungen direkt aus dem
-Frontend (die Rechte entsprechen dem angemeldeten Benutzer).
+Home-Assistant-Sitzung: **kein Token, kein CORS, kein `configuration.yaml`-Eintrag** und
+Live-Aktualisierungen direkt aus dem Frontend (Rechte = angemeldeter Benutzer).
 
 1. HACS installieren (falls noch nicht vorhanden).
-2. In HACS: **Frontend** > Drei-Punkte-Menue > **Benutzerdefinierte Repositories** >
-   `https://github.com/Grantii/AllBattery` > Kategorie **Dashboard** > *Hinzufuegen*.
-3. AllBattery in HACS installieren. Der genaue Ablageort (`config/www/community/...`) wird in
-   HACS angezeigt.
-4. In `configuration.yaml` eintragen:
+2. In HACS: **Integrationen** > Drei-Punkte-Menue > **Benutzerdefinierte Repositories** >
+   `https://github.com/Grantii/AllBattery` > Kategorie **Integration** > *Hinzufuegen*.
+3. AllBattery in HACS installieren.
+4. In Home Assistant: *Einstellungen > Geraete & Dienste > **Integration hinzufuegen** >
+   **AllBattery***. Danach erscheint **Batterien** in der Seitenleiste.
 
-   ```yaml
-   panel_custom:
-     - name: allbattery
-       sidebar_title: Batterien
-       sidebar_icon: mdi:battery-heart-variant
-       url_path: allbattery
-       module_url: /hacsfiles/AllBattery/AllBattery.js
-       config:
-         refresh_seconds: 60    # 0 = kein Auto-Refresh
-         forecast: true         # Prognose-Modul
-         forecast_hours: 24     # Betrachteter Zeitraum in Stunden
-   ```
-
-5. Home Assistant neu starten - danach erscheint **Batterien** in der Seitenleiste.
+Die Panel-Optionen (Auto-Refresh, Prognose-Zeitraum) lassen sich jederzeit aendern unter
+*Einstellungen > Geraete & Dienste > AllBattery > **Konfigurieren***.
 
 > Fuer die Raum-Zuordnung wird ein Konto mit Administratorrechten benoetigt (Template-API).
 > Ohne Admin-Rechte werden die Batterien trotzdem vollstaendig angezeigt, nur die Raumangabe
 > bleibt leer.
 
-**Selbst bauen:** `npm run build:panel` erzeugt die Datei `AllBattery.js` im Repo-Root
-(eine einzige, in sich geschlossene Datei mit eingebettetem CSS).
+**Manuell ohne HACS-Integration** (wenn du `panel_custom` bevorzugst):
+
+```bash
+npm run build:panel        # erzeugt custom_components/allbattery/frontend/allbattery.js
+```
+
+Die Datei nach `<HA-Config>/www/allbattery.js` kopieren und eintragen:
+
+```yaml
+panel_custom:
+  - name: allbattery
+    sidebar_title: Batterien
+    sidebar_icon: mdi:battery-heart-variant
+    url_path: allbattery
+    module_url: /local/allbattery.js
+    config:
+      refresh_seconds: 60
+      forecast: true
+      forecast_hours: 24
+```
+
 
 ### Long-Lived Access Token erstellen
 

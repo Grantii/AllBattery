@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "AllBattery",
+        "description": "Fügt ein Sidebar-Panel mit der Übersicht aller Batterie-Entitäten hinzu. Weitere Angaben sind nicht nötig."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "AllBattery ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "AllBattery-Optionen",
+        "description": "Einstellungen für das Batterie-Dashboard.",
+        "data": {
+          "refresh_seconds": "Auto-Refresh (Sekunden, 0 = aus)",
+          "forecast": "Prognose-Modul aktivieren",
+          "forecast_hours": "Prognose-Zeitraum (Stunden)"
+        }
+      }
+    }
+  }
+}

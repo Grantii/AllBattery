@@ -45,3 +45,7 @@ secrets*.json
 # Test-/Coverage-Artefakte
 coverage/
 .vitest/
+
+# Python (HACS-Integration)
+__pycache__/
+*.pyc

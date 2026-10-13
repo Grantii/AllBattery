@@ -1,5 +1,4 @@
 {
   "name": "AllBattery",
-  "content_in_root": true,
-  "filename": "AllBattery.js"
+  "homeassistant": "2025.1.0"
 }

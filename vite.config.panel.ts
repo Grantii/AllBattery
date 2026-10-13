@@ -2,27 +2,27 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
 /*
- * Baut das HACS-Dashboard-Plugin als EINE in sich geschlossene JS-Datei
- * (`AllBattery.js` im Repo-Root). Das CSS wird per `?inline` in das Bundle
- * eingebettet, damit HACS nur eine Datei installieren muss.
+ * Baut das Frontend-Bundle der HACS-Integration als EINE in sich geschlossene
+ * JS-Datei nach `custom_components/allbattery/frontend/allbattery.js`.
+ * Das CSS wird per `?inline` in das Bundle eingebettet, damit keine weiteren
+ * Dateien ausgeliefert werden muessen.
  *
- * Hinweis: Vite warnt bei `outDir: '.'` ("could cause Vite to overwriting source
- * files"). Die Warnung ist hier unkritisch, weil `emptyOutDir: false` gesetzt ist
- * und ausschliesslich die eine Datei `AllBattery.js` geschrieben wird. Der
- * Standalone-Build schreibt weiterhin nach `dist/` und laesst diese Datei in Ruhe.
+ * Fuer die manuelle Variante (panel_custom mit configuration.yaml) kann die
+ * erzeugte Datei einfach nach `<HA-Config>/www/` kopiert werden.
  */
 export default defineConfig({
   plugins: [tailwindcss()],
   build: {
-    outDir: '.',
-    emptyOutDir: false,
+    outDir: 'custom_components/allbattery/frontend',
+    emptyOutDir: true,
     cssCodeSplit: false,
     minify: true,
     sourcemap: false,
     lib: {
       entry: 'src/panel.ts',
       formats: ['es'],
-      fileName: () => 'AllBattery.js',
+      fileName: () => 'allbattery.js',
     },
   },
 });
+

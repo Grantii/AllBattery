@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "AllBattery",
+        "description": "Adds a sidebar panel with an overview of all battery entities. No further details are required."
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "AllBattery is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "AllBattery options",
+        "description": "Settings for the battery dashboard.",
+        "data": {
+          "refresh_seconds": "Auto refresh (seconds, 0 = off)",
+          "forecast": "Enable forecast module",
+          "forecast_hours": "Forecast period (hours)"
+        }
+      }
+    }
+  }
+}
