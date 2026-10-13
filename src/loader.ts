@@ -1,6 +1,12 @@
 import { isBatteryState, samplesFromHistory, toBatteryItem, withForecast } from './battery';
 import type { BatteryItem, HassHistoryEntry, HassState } from './types';
 
+/** Zusatzinformationen zu einer Entitaet (Raum und Geraet). */
+export interface EntityMeta {
+  area: string;
+  device: string;
+}
+
 /**
  * Abstraktion der Datenquelle:
  * - `HomeAssistantClient` (REST mit Long-Lived-Token) fuer die eigenstaendige App
@@ -9,7 +15,36 @@ import type { BatteryItem, HassHistoryEntry, HassState } from './types';
 export interface DataSource {
   getStates(): Promise<HassState[]>;
   getHistory(entityId: string, hours: number): Promise<HassHistoryEntry[]>;
-  getAreas(): Promise<Record<string, string>>;
+  /** Raum- und Geraetenamen (benoetigt Administratorrechte). */
+  getMeta(): Promise<Record<string, EntityMeta>>;
+}
+
+/**
+ * Jinja-Template, das fuer alle Batterie-Entitaeten Raum- und Geraetenamen liefert.
+ * Format je Zeile: `entity_id=Raum<TAB>Geraet`
+ */
+export const META_TEMPLATE = [
+  "{% for s in states if s.attributes.device_class == 'battery' %}",
+  "{{ s.entity_id }}={{ area_name(s.entity_id) or '' }}\t{{ device_attr(s.entity_id, 'name_by_user') or device_attr(s.entity_id, 'name') or '' }}\n",
+  '{% endfor %}',
+].join('');
+
+/** Wandelt die Ausgabe von {@link META_TEMPLATE} in eine Zuordnung um. */
+export function parseMeta(result: string): Record<string, EntityMeta> {
+  const map: Record<string, EntityMeta> = {};
+
+  for (const line of result.split('\n')) {
+    const separator = line.indexOf('=');
+    if (separator <= 0) continue;
+
+    const entityId = line.slice(0, separator).trim();
+    if (!entityId.includes('.')) continue;
+
+    const [area = '', device = ''] = line.slice(separator + 1).split('\t');
+    map[entityId] = { area: area.trim(), device: device.trim() };
+  }
+
+  return map;
 }
 
 export interface LoadOptions {
@@ -51,16 +86,17 @@ export async function loadBatteries(
 ): Promise<BatteryItem[]> {
   const states = await source.getStates();
 
-  let areas: Record<string, string> = {};
+  let meta: Record<string, EntityMeta> = {};
   try {
-    areas = await source.getAreas();
+    meta = await source.getMeta();
   } catch {
-    // Raumnamen sind optional - sie benoetigen Administratorrechte.
+    // Raum- und Geraetenamen sind optional - sie benoetigen Administratorrechte.
   }
 
-  const items = states
-    .filter(isBatteryState)
-    .map((state) => toBatteryItem(state, areas[state.entity_id] ?? ''));
+  const items = states.filter(isBatteryState).map((state) => {
+    const info = meta[state.entity_id];
+    return toBatteryItem(state, info?.area ?? '', info?.device ?? '');
+  });
 
   options.onUpdate?.(items);
 

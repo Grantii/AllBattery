@@ -69,7 +69,7 @@ function friendlyName(state: HassState): string {
 }
 
 /** Wandelt eine Entitaet in ein darstellbares Batterie-Objekt um. */
-export function toBatteryItem(state: HassState, area: string): BatteryItem {
+export function toBatteryItem(state: HassState, area: string, device = ''): BatteryItem {
   const attributes = state.attributes ?? {};
   const kind: BatteryKind = state.entity_id.startsWith('binary_sensor.') ? 'low' : 'level';
 
@@ -84,6 +84,7 @@ export function toBatteryItem(state: HassState, area: string): BatteryItem {
   return {
     entityId: state.entity_id,
     name: friendlyName(state),
+    device,
     area,
     kind,
     rawState: state.state,

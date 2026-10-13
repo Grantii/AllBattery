@@ -149,6 +149,17 @@ function renderHeader(view: AppView): string {
 }
 
 function renderSummary(view: AppView): string {
+  const allActive = view.filter.groups.length === 0;
+  const allBorder = allActive ? 'border-sky-500/60' : 'border-slate-800';
+  const allTile = `
+      <button type="button" data-action="clear-groups" aria-pressed="${allActive}"
+        class="flex flex-col items-start gap-1 rounded-2xl border ${allBorder} bg-slate-900/60 p-4 text-left transition hover:border-slate-600">
+        <span class="inline-flex items-center gap-2 text-xs font-medium text-slate-300">
+          <span class="h-2 w-2 rounded-full bg-sky-400"></span>Alle
+        </span>
+        <span class="text-2xl font-semibold tabular-nums text-slate-100">${view.items.length}</span>
+      </button>`;
+
   const tiles = GROUP_ORDER.map((group) => {
     const active = view.filter.groups.includes(group);
     const border = active ? 'border-sky-500/60' : 'border-slate-800';
@@ -162,7 +173,13 @@ function renderSummary(view: AppView): string {
       </button>`;
   }).join('');
 
-  return `<section class="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Uebersicht">${tiles}</section>`;
+  return `
+  <section aria-label="Uebersicht und Filter">
+    <p class="mb-2 text-xs text-slate-400">
+      Klicke eine Gruppe, um nur diese Batterien anzuzeigen - mehrere Gruppen lassen sich kombinieren.
+    </p>
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-5">${allTile}${tiles}</div>
+  </section>`;
 }
 
 export function renderApp(view: AppView): string {
@@ -298,22 +315,65 @@ function renderControls(view: AppView): string {
   </section>`;
 }
 
+/** Hauptzeile der Karte: Geraetename, sonst der Entitaetsname. */
+function displayTitle(item: BatteryItem): string {
+  return item.device || item.name;
+}
+
+/** Detailangaben fuer den Mouse-Over-Tooltip. */
+function renderTooltip(item: BatteryItem): string {
+  const rows: Array<[string, string]> = [
+    ['Gerät', item.device || '—'],
+    ['Bereich', item.area || '—'],
+    ['Entität', item.name],
+    ['Entity-ID', item.entityId],
+    ['Zustand', `${item.rawState}${item.unit ? ` ${item.unit}` : ''}`],
+    ['Gruppe', GROUP_LABELS[item.group]],
+  ];
+
+  const forecast = item.forecast;
+  if (forecast) {
+    rows.push(['Prognose', forecastText(item) ?? '—']);
+    rows.push([
+      'Trend',
+      `${formatRate(forecast.percentPerHour)} · ${forecast.sampleCount} Messpunkte · ${formatDuration(forecast.spanHours)}`,
+    ]);
+  }
+  if (item.lastChanged) {
+    rows.push(['Letzte Änderung', new Date(item.lastChanged).toLocaleString('de-DE')]);
+  }
+
+  const entries = rows
+    .map(
+      ([label, value]) =>
+        `<dt class="text-slate-400">${escapeHtml(label)}</dt><dd class="break-words text-slate-100">${escapeHtml(value)}</dd>`,
+    )
+    .join('');
+
+  return `
+    <div class="pointer-events-none absolute bottom-full left-0 z-30 mb-2 hidden w-72 rounded-xl border border-slate-700 bg-slate-950/95 p-3 shadow-xl group-hover:block group-focus-within:block">
+      <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">${entries}</dl>
+    </div>`;
+}
+
 function renderCard(item: BatteryItem): string {
   const styles = GROUP_STYLES[item.group];
   const unknown = item.level === null;
   const percent = unknown ? 100 : Math.max(0, Math.min(100, item.level ?? 0));
   const forecast = forecastText(item);
   const updated = item.lastChanged ? new Date(item.lastChanged).toLocaleString('de-DE') : '';
-  const area = item.area ? `${escapeHtml(item.area)} &middot; ` : '';
+  const title = displayTitle(item);
+  const subtitle = [item.area, item.device ? item.name : ''].filter((part) => part !== '').join(' · ');
 
   return `
-  <article class="flex flex-col gap-3 rounded-2xl border ${styles.card} bg-slate-900/60 p-4">
+  <article tabindex="0"
+    class="group relative flex flex-col gap-3 rounded-2xl border ${styles.card} bg-slate-900/60 p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/60">
+    ${renderTooltip(item)}
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0">
-        <h3 class="truncate text-sm font-semibold text-slate-100" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h3>
-        <p class="mt-0.5 truncate text-xs text-slate-400" title="${escapeHtml(item.entityId)}">
-          ${area}<span class="font-mono">${escapeHtml(item.entityId)}</span>
-        </p>
+        <h3 class="truncate text-sm font-semibold text-slate-100">${escapeHtml(title)}</h3>
+        ${subtitle ? `<p class="mt-0.5 truncate text-xs text-slate-400">${escapeHtml(subtitle)}</p>` : ''}
+        <p class="mt-0.5 truncate font-mono text-[11px] text-slate-500">${escapeHtml(item.entityId)}</p>
       </div>
       <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${styles.badge}">${escapeHtml(levelLabel(item))}</span>
     </div>

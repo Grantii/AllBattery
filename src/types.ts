@@ -42,7 +42,10 @@ export interface Forecast {
 
 export interface BatteryItem {
   entityId: string;
+  /** Freundlicher Name der Entitaet (z. B. "Batterie"). */
   name: string;
+  /** Geraetename aus Home Assistant (leer, wenn die Entitaet keinem Geraet zugeordnet ist). */
+  device: string;
   area: string;
   kind: BatteryKind;
   rawState: string;

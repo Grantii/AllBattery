@@ -1,4 +1,5 @@
 import type { HassHistoryEntry, HassState } from './types';
+import { META_TEMPLATE, parseMeta, type EntityMeta } from './loader';
 
 export class HassError extends Error {
   readonly status: number | undefined;
@@ -107,30 +108,15 @@ export class HomeAssistantClient {
   }
 
   /**
-   * Bereiche (Raeume) aller Batterie-Entitaeten ueber die Template-API.
-   * Liefert eine Zuordnung `entity_id -> Raumname` (leerer String = kein Raum).
-   * Schlaegt der Aufruf fehl, wird das vom Aufrufer ignoriert.
+   * Raum- und Geraetenamen aller Batterie-Entitaeten ueber die Template-API.
+   * Erfordert ein Token mit Administratorrechten; schlaegt der Aufruf fehl,
+   * wird das vom Aufrufer ignoriert.
    */
-  async getAreas(): Promise<Record<string, string>> {
-    const template = [
-      "{% for s in states if s.attributes.device_class == 'battery' %}",
-      "{{ s.entity_id }}={{ area_name(s.entity_id) or '' }}\n",
-      '{% endfor %}',
-    ].join('');
-
+  async getMeta(): Promise<Record<string, EntityMeta>> {
     const result = await this.requestText('/api/template', {
       method: 'POST',
-      body: JSON.stringify({ template }),
+      body: JSON.stringify({ template: META_TEMPLATE }),
     });
-
-    const map: Record<string, string> = {};
-    for (const line of result.split('\n')) {
-      const separator = line.indexOf('=');
-      if (separator <= 0) continue;
-      const entityId = line.slice(0, separator).trim();
-      const area = line.slice(separator + 1).trim();
-      if (entityId.includes('.')) map[entityId] = area;
-    }
-    return map;
+    return parseMeta(result);
   }
 }

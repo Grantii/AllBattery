@@ -1,6 +1,6 @@
 import css from './style.css?inline';
 import { countGroups, isBatteryState, toBatteryItem } from './battery';
-import { loadBatteries, type DataSource } from './loader';
+import { META_TEMPLATE, loadBatteries, parseMeta, type DataSource, type EntityMeta } from './loader';
 import { loadFilter, saveFilter } from './storage';
 import type { AppView, StatusInfo } from './ui';
 import { renderApp, renderBatteryGrid } from './ui';
@@ -37,9 +37,9 @@ export interface AllBatteryPanelConfig {
 
 /** Datenquelle auf Basis des Frontend-Objekts - kein Token, keine CORS-Konfiguration. */
 class HassDataSource implements DataSource {
-  /** Raumnamen werden einmal geladen und danach wiederverwendet. */
-  areas: Record<string, string> = {};
-  private areasLoaded = false;
+  /** Raum- und Geraetenamen werden einmal geladen und danach wiederverwendet. */
+  meta: Record<string, EntityMeta> = {};
+  private metaLoaded = false;
 
   constructor(private readonly hass: HassFrontend) {}
 
@@ -64,35 +64,24 @@ class HassDataSource implements DataSource {
     return Array.isArray(data) && Array.isArray(data[0]) ? data[0] : [];
   }
 
-  async getAreas(): Promise<Record<string, string>> {
-    if (this.areasLoaded) return this.areas;
+  async getMeta(): Promise<Record<string, EntityMeta>> {
+    if (this.metaLoaded) return this.meta;
 
     // Die Template-API erfordert Administratorrechte. Ohne Admin wird sie gar
     // nicht erst aufgerufen - sonst wuerde sie mit HTTP 403 fehlschlagen.
     const user = this.hass.user;
     if (user && user.is_admin !== true && user.is_owner !== true) {
-      this.areasLoaded = true;
+      this.metaLoaded = true;
       return {};
     }
 
-    const template = [
-      "{% for s in states if s.attributes.device_class == 'battery' %}",
-      "{{ s.entity_id }}={{ area_name(s.entity_id) or '' }}\n",
-      '{% endfor %}',
-    ].join('');
+    const result = await this.hass.callApi<string>('POST', 'template', {
+      template: META_TEMPLATE,
+    });
 
-    const result = await this.hass.callApi<string>('POST', 'template', { template });
-    const map: Record<string, string> = {};
-    for (const line of String(result).split('\n')) {
-      const separator = line.indexOf('=');
-      if (separator <= 0) continue;
-      const entityId = line.slice(0, separator).trim();
-      if (entityId.includes('.')) map[entityId] = line.slice(separator + 1).trim();
-    }
-
-    this.areas = map;
-    this.areasLoaded = true;
-    return map;
+    this.meta = parseMeta(String(result));
+    this.metaLoaded = true;
+    return this.meta;
   }
 }
 
@@ -297,12 +286,13 @@ class AllBatteryPanel extends HTMLElement {
     this.lastSync = now;
 
     const previous = new Map(this.items.map((item) => [item.entityId, item]));
-    const areas = this.source?.areas ?? {};
+    const meta = this.source?.meta ?? {};
 
     this.items = Object.values(hass.states)
       .filter(isBatteryState)
       .map((state) => {
-        const item = toBatteryItem(state, areas[state.entity_id] ?? '');
+        const info = meta[state.entity_id];
+        const item = toBatteryItem(state, info?.area ?? '', info?.device ?? '');
         const old = previous.get(item.entityId);
         return old?.forecast ? { ...item, forecast: old.forecast } : item;
       });
