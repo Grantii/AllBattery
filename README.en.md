@@ -45,7 +45,15 @@ how much longer a battery will last.
 
 A new **Batteries** entry appears in the sidebar. Future updates arrive automatically via HACS.
 
-### Variant 2: without HACS – embed as a web page in a dashboard
+### Variant 2: without HACS – embed as a web page
+
+**a) Already hosted (GitHub Pages):** <https://grantii.github.io/AllBattery/>
+
+Allow the origin in Home Assistant (*Settings → System → Network → HTTP server →
+CORS allowed origins* → `https://grantii.github.io`), then add the URL as a **Webpage** card in a
+dashboard or simply open it in your browser.
+
+**b) Served by Home Assistant itself** (same origin, therefore no CORS):
 
 1. Build the app and copy it into the `www` folder of your Home Assistant configuration:
 

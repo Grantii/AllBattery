@@ -43,7 +43,15 @@ gruppiert sie nach Zustand und schätzt, wie lange ein Akku noch hält.
 
 Danach erscheint **Batterien** in der Seitenleiste. Updates kommen später automatisch über HACS.
 
-### Variante 2: ohne HACS – als Webseite in ein Dashboard einbinden
+### Variante 2: ohne HACS – als Webseite einbinden
+
+**a) Fertig gehostet (GitHub Pages):** <https://grantii.github.io/AllBattery/>
+
+Dafür in Home Assistant den Origin freigeben (*Einstellungen → System → Netzwerk → HTTP-Server →
+CORS allowed origins* → `https://grantii.github.io`), dann die URL als Karte **Webseite** in ein
+Dashboard einbinden oder direkt im Browser öffnen.
+
+**b) Von Home Assistant selbst ausliefern** (gleiche Herkunft, dadurch kein CORS):
 
 1. Build erstellen und in den `www`-Ordner der Home-Assistant-Konfiguration kopieren:
 
