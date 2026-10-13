@@ -1,0 +1,3 @@
+# Das gebaute HACS-Bundle nicht als Text-Diff anzeigen und aus der
+# Sprachen-Statistik heraushalten (es ist minifizierter Build-Output).
+AllBattery.js linguist-generated=true -diff

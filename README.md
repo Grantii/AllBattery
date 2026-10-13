@@ -187,6 +187,20 @@ ein, zum Beispiel:
 **Keine Batterien gefunden?** Gesucht werden Entitaeten mit `device_class: battery`
 (zusaetzlich Sensoren in Prozent mit "battery"/"batterie"/"akku" im Entity-Namen).
 
+## Veroeffentlichen (Releases)
+
+HACS zeigt als Version den Tag des **letzten GitHub-Releases** an. Fuer ein Release:
+
+```bash
+npm run build:all                                  # Standalone + HACS-Bundle bauen
+git add -A && git commit -m "release: v0.1.0"
+git tag v0.1.0
+git push origin v0.1.0                             # explizit, damit beide Server den Tag bekommen
+```
+
+Danach auf GitHub unter *Releases > Draft a new release* den Tag `v0.1.0` auswaehlen und
+veroeffentlichen. Ohne Release verwendet HACS den Commit-Hash als Version.
+
 ## Lizenz
 
 MIT – siehe [LICENSE](LICENSE).
