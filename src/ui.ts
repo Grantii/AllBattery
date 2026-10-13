@@ -1,5 +1,6 @@
 import { GROUP_LABELS, GROUP_ORDER, filterAndSort } from './battery';
 import { formatDuration } from './forecast';
+import { LOGO_DATA_URI } from './logo';
 import type { BatteryGroup, BatteryItem, ConnectionSettings, FilterState, SortKey } from './types';
 
 export interface StatusInfo {
@@ -120,19 +121,8 @@ function statusBadge(status: StatusInfo): string {
   </span>`;
 }
 
-/** Marken-Logo (identisch mit `custom_components/allbattery/brand/icon.png`). */
-const LOGO_SVG = `<svg viewBox="0 0 48 48" class="h-10 w-10 shrink-0" role="img" aria-label="AllBattery">
-  <defs>
-    <linearGradient id="allbattery-logo" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#38bdf8" />
-      <stop offset="1" stop-color="#0284c7" />
-    </linearGradient>
-  </defs>
-  <rect width="48" height="48" rx="10.56" fill="url(#allbattery-logo)" />
-  <rect x="9.1" y="13.9" width="26.4" height="20.2" rx="3.6" fill="none" stroke="#ffffff" stroke-width="3.6" />
-  <rect x="36.1" y="20.4" width="3.8" height="7.3" rx="1" fill="#ffffff" />
-  <rect x="12.4" y="17.2" width="11" height="13.7" rx="1.4" fill="#ffffff" />
-</svg>`;
+/** Logo in der Kopfzeile (Data-URI aus `src/logo.ts`, erzeugt aus assets/Logo.png). */
+const LOGO_IMAGE = `<img src="${LOGO_DATA_URI}" alt="" class="h-10 w-10 shrink-0 rounded-xl" aria-hidden="true" />`;
 
 const HEADER_BUTTON_CLASS =
   'rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-200 transition hover:border-slate-600 hover:bg-slate-800';
@@ -142,7 +132,7 @@ function renderHeader(view: AppView): string {
   <header class="sticky top-0 z-20 border-b border-slate-800 bg-slate-950/85 backdrop-blur">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
       <div class="flex items-center gap-3">
-        ${LOGO_SVG}
+        ${LOGO_IMAGE}
         <div>
           <h1 class="text-lg font-semibold tracking-tight">AllBattery</h1>
           <p class="text-xs text-slate-400">Batterie-Monitoring fuer Home Assistant</p>

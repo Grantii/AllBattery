@@ -241,8 +241,8 @@ function D(e) {
 	T(x, e);
 }
 //#endregion
-//#region src/ui.ts
-var O = {
+//#region src/logo.ts
+var O = "data:image/png;base64,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", k = {
 	critical: {
 		badge: "bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30",
 		fill: "bg-rose-500",
@@ -267,70 +267,70 @@ var O = {
 		dot: "bg-slate-500",
 		card: "border-slate-800"
 	}
-}, k = {
+}, A = {
 	idle: "bg-slate-500/15 text-slate-300 ring-1 ring-slate-500/30",
 	loading: "bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/30",
 	ok: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30",
 	error: "bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30"
-}, A = {
+}, j = {
 	idle: "bg-slate-400",
 	loading: "bg-sky-400 animate-pulse",
 	ok: "bg-emerald-400",
 	error: "bg-rose-400"
-}, j = "rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500", M = "text-xs font-medium uppercase tracking-wide text-slate-400";
-function N(e) {
+}, M = "rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500", N = "text-xs font-medium uppercase tracking-wide text-slate-400";
+function P(e) {
 	return e.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
-function P(e) {
+function F(e) {
 	return Number.isInteger(e) ? String(e) : e.toFixed(1);
 }
-function F(e) {
+function I(e) {
 	return `${e.toFixed(2)} %/h`;
 }
-function I(e) {
+function L(e) {
 	if (e.kind === "low") {
 		let t = e.rawState.trim().toLowerCase();
 		return t === "on" ? "Schwach" : t === "off" ? "OK" : "Unbekannt";
 	}
-	return e.level === null ? "Unbekannt" : `${P(e.level)} ${e.unit}`.trim();
+	return e.level === null ? "Unbekannt" : `${F(e.level)} ${e.unit}`.trim();
 }
-function L(e) {
+function R(e) {
 	let n = e.forecast;
 	if (!n) return null;
 	switch (n.status) {
-		case "discharging": return `Reicht ca. ${t(n.hoursRemaining)} (${F(n.percentPerHour)})`;
-		case "charging": return `Laedt (+${F(Math.abs(n.percentPerHour))})`;
+		case "discharging": return `Reicht ca. ${t(n.hoursRemaining)} (${I(n.percentPerHour)})`;
+		case "charging": return `Laedt (+${I(Math.abs(n.percentPerHour))})`;
 		case "stable": return "Ladestand stabil";
 		default: return "Zu wenig Verlaufsdaten";
 	}
 }
-function R(e) {
-	return `<span class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${k[e.kind]}">
-    <span class="h-2 w-2 rounded-full ${A[e.kind]}"></span>${N(e.message)}
+function z(e) {
+	return `<span class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${A[e.kind]}">
+    <span class="h-2 w-2 rounded-full ${j[e.kind]}"></span>${P(e.message)}
   </span>`;
 }
-var z = "<svg viewBox=\"0 0 48 48\" class=\"h-10 w-10 shrink-0\" role=\"img\" aria-label=\"AllBattery\">\n  <defs>\n    <linearGradient id=\"allbattery-logo\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0\" stop-color=\"#38bdf8\" />\n      <stop offset=\"1\" stop-color=\"#0284c7\" />\n    </linearGradient>\n  </defs>\n  <rect width=\"48\" height=\"48\" rx=\"10.56\" fill=\"url(#allbattery-logo)\" />\n  <rect x=\"9.1\" y=\"13.9\" width=\"26.4\" height=\"20.2\" rx=\"3.6\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"3.6\" />\n  <rect x=\"36.1\" y=\"20.4\" width=\"3.8\" height=\"7.3\" rx=\"1\" fill=\"#ffffff\" />\n  <rect x=\"12.4\" y=\"17.2\" width=\"11\" height=\"13.7\" rx=\"1.4\" fill=\"#ffffff\" />\n</svg>", B = "rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-200 transition hover:border-slate-600 hover:bg-slate-800";
-function V(e) {
+var B = `<img src="${O}" alt="" class="h-10 w-10 shrink-0 rounded-xl" aria-hidden="true" />`, V = "rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-200 transition hover:border-slate-600 hover:bg-slate-800";
+function H(e) {
 	return `
   <header class="sticky top-0 z-20 border-b border-slate-800 bg-slate-950/85 backdrop-blur">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
       <div class="flex items-center gap-3">
-        ${z}
+        ${B}
         <div>
           <h1 class="text-lg font-semibold tracking-tight">AllBattery</h1>
           <p class="text-xs text-slate-400">Batterie-Monitoring fuer Home Assistant</p>
         </div>
       </div>
       <div class="ml-auto flex flex-wrap items-center gap-2">
-        ${R(e.status)}
-        ${e.lastUpdate ? `<span class="text-xs text-slate-400">Stand: ${N(e.lastUpdate)}</span>` : ""}
-        <button type="button" data-action="refresh" class="${B}">Aktualisieren</button>
-        ${e.mode === "standalone" ? `<button type="button" data-action="toggle-settings" class="${B}">Einstellungen</button>` : ""}
+        ${z(e.status)}
+        ${e.lastUpdate ? `<span class="text-xs text-slate-400">Stand: ${P(e.lastUpdate)}</span>` : ""}
+        <button type="button" data-action="refresh" class="${V}">Aktualisieren</button>
+        ${e.mode === "standalone" ? `<button type="button" data-action="toggle-settings" class="${V}">Einstellungen</button>` : ""}
       </div>
     </div>
   </header>`;
 }
-function H(e) {
+function U(e) {
 	let { action: t, label: n, count: r, active: i, dotClass: a } = e;
 	return `
       <button type="button" ${t} aria-pressed="${i}"
@@ -343,19 +343,19 @@ function H(e) {
         <span class="text-2xl font-semibold tabular-nums ${i ? "text-white" : "text-slate-100"}">${r}</span>
       </button>`;
 }
-function U(e) {
-	let t = e.filter.groups, i = t.length === 0, a = H({
+function W(e) {
+	let t = e.filter.groups, i = t.length === 0, a = U({
 		action: "data-action=\"clear-groups\"",
 		label: "Alle",
 		count: e.items.length,
 		active: i,
 		dotClass: "bg-sky-400"
-	}), o = n.map((n) => H({
+	}), o = n.map((n) => U({
 		action: `data-action="toggle-group" data-group="${n}"`,
 		label: r[n],
 		count: e.counts[n],
 		active: t.includes(n),
-		dotClass: O[n].dot
+		dotClass: k[n].dot
 	})).join(""), s = e.items.filter((e) => t.includes(e.group)).length;
 	return `
   <section aria-label="Uebersicht und Filter">
@@ -371,20 +371,20 @@ function U(e) {
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-5">${a}${o}</div>
   </section>`;
 }
-function W(e) {
-	let t = e.mode === "panel", n = e.settings.url.trim() !== "" && e.settings.token.trim() !== "", r = !t && (!n || e.settingsOpen), i = t || n ? U(e) + q(e) + Z(e) : G();
+function G(e) {
+	let t = e.mode === "panel", n = e.settings.url.trim() !== "" && e.settings.token.trim() !== "", r = !t && (!n || e.settingsOpen), i = t || n ? W(e) + J(e) + Q(e) : K();
 	return `
-    ${V(e)}
+    ${H(e)}
     <main class="mx-auto max-w-7xl px-4 pb-16 pt-6">
-      ${r ? K(e) : ""}
+      ${r ? q(e) : ""}
       ${i}
     </main>
-    ${Q()}`;
+    ${$()}`;
 }
-function G() {
+function K() {
 	return "\n  <section class=\"mt-6 rounded-2xl border border-slate-800 bg-slate-900/60 p-6\">\n    <h2 class=\"text-base font-semibold text-slate-100\">Willkommen bei AllBattery</h2>\n    <p class=\"mt-2 max-w-3xl text-sm text-slate-300\">\n      Trage deine Home-Assistant-URL und einen Long-Lived Access Token ein, um alle\n      Batterie-Entitaeten deiner Installation zu ueberwachen. AllBattery sucht Entitaeten mit\n      <code class=\"rounded bg-slate-800 px-1.5 py-0.5 text-xs\">device_class: battery</code>,\n      gruppiert sie nach Zustand und schaetzt die Restlaufzeit aus dem Entladetrend.\n    </p>\n    <ul class=\"mt-4 grid gap-2 text-sm text-slate-400 sm:grid-cols-2\">\n      <li>&#8226; Gruppierung: Kritisch, Warnung, Gut, Unbekannt</li>\n      <li>&#8226; Filter &amp; Sortierung nach Ladestand, Name und Raum</li>\n      <li>&#8226; Prognose der Restlaufzeit in Tagen und Stunden</li>\n      <li>&#8226; Responsives Dashboard im Dark Mode</li>\n    </ul>\n  </section>";
 }
-function K(e) {
+function q(e) {
 	let t = e.settings;
 	return `
   <section class="mb-6 rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
@@ -395,29 +395,29 @@ function K(e) {
 
     <form data-role="connection-form" class="grid gap-4 sm:grid-cols-2">
       <label class="flex flex-col gap-1 sm:col-span-2">
-        <span class="${M}">Home-Assistant-URL</span>
+        <span class="${N}">Home-Assistant-URL</span>
         <input type="text" name="url" required autocomplete="off" spellcheck="false"
-          placeholder="http://homeassistant.local:8123" value="${N(t.url)}"
-          class="${j}" />
+          placeholder="http://homeassistant.local:8123" value="${P(t.url)}"
+          class="${M}" />
       </label>
 
       <label class="flex flex-col gap-1 sm:col-span-2">
-        <span class="${M}">Long-Lived Access Token</span>
+        <span class="${N}">Long-Lived Access Token</span>
         <input type="password" name="token" required autocomplete="off" spellcheck="false"
-          placeholder="eyJhbGciOi..." value="${N(t.token)}"
-          class="${j}" />
+          placeholder="eyJhbGciOi..." value="${P(t.token)}"
+          class="${M}" />
       </label>
 
       <label class="flex flex-col gap-1">
-        <span class="${M}">Auto-Refresh (Sekunden, 0 = aus)</span>
+        <span class="${N}">Auto-Refresh (Sekunden, 0 = aus)</span>
         <input type="number" name="refreshSeconds" min="0" max="3600" step="5"
-          value="${t.refreshSeconds}" class="${j}" />
+          value="${t.refreshSeconds}" class="${M}" />
       </label>
 
       <label class="flex flex-col gap-1">
-        <span class="${M}">Prognose-Zeitraum (Stunden)</span>
+        <span class="${N}">Prognose-Zeitraum (Stunden)</span>
         <input type="number" name="forecastHours" min="1" max="336" step="1"
-          value="${t.forecastHours}" class="${j}" />
+          value="${t.forecastHours}" class="${M}" />
       </label>
 
       <label class="flex items-center gap-2 sm:col-span-2">
@@ -438,7 +438,7 @@ function K(e) {
     </form>
   </section>`;
 }
-function q(e) {
+function J(e) {
 	let t = [
 		{
 			value: "level",
@@ -455,21 +455,21 @@ function q(e) {
 	].map((t) => `<option value="${t.value}" ${e.filter.sort === t.value ? "selected" : ""}>${t.label}</option>`).join(""), n = e.filter.groups.length > 0 ? "<button type=\"button\" data-action=\"clear-groups\" class=\"text-sm text-sky-300 transition hover:text-sky-200\">Filter zuruecksetzen</button>" : "", r = e.forecastLoading ? "<span class=\"text-xs text-sky-300\">Prognose wird berechnet ...</span>" : "";
 	return `
   <section class="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/60 p-3">
-    <input type="search" data-role="query" value="${N(e.filter.query)}"
+    <input type="search" data-role="query" value="${P(e.filter.query)}"
       placeholder="Nach Name, Raum oder Entity-ID suchen ..."
-      class="min-w-[14rem] flex-1 ${j}" />
+      class="min-w-[14rem] flex-1 ${M}" />
     <label class="flex items-center gap-2 text-sm text-slate-300">
       <span>Sortieren:</span>
-      <select data-role="sort" class="${j}">${t}</select>
+      <select data-role="sort" class="${M}">${t}</select>
     </label>
     ${r}
     ${n}
   </section>`;
 }
-function J(e) {
+function Y(e) {
 	return e.device || e.name;
 }
-function Y(e) {
+function X(e) {
 	let n = [
 		["Gerät", e.device || "—"],
 		["Bereich", e.area || "—"],
@@ -478,51 +478,51 @@ function Y(e) {
 		["Zustand", `${e.rawState}${e.unit ? ` ${e.unit}` : ""}`],
 		["Gruppe", r[e.group]]
 	], i = e.forecast;
-	return i && (n.push(["Prognose", L(e) ?? "—"]), n.push(["Trend", `${F(i.percentPerHour)} · ${i.sampleCount} Messpunkte · ${t(i.spanHours)}`])), e.lastChanged && n.push(["Letzte Änderung", new Date(e.lastChanged).toLocaleString("de-DE")]), `
+	return i && (n.push(["Prognose", R(e) ?? "—"]), n.push(["Trend", `${I(i.percentPerHour)} · ${i.sampleCount} Messpunkte · ${t(i.spanHours)}`])), e.lastChanged && n.push(["Letzte Änderung", new Date(e.lastChanged).toLocaleString("de-DE")]), `
     <div class="pointer-events-none absolute bottom-full left-0 z-30 mb-2 hidden w-72 rounded-xl border border-slate-700 bg-slate-950/95 p-3 shadow-xl group-hover:block group-focus-within:block">
-      <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">${n.map(([e, t]) => `<dt class="text-slate-400">${N(e)}</dt><dd class="break-words text-slate-100">${N(t)}</dd>`).join("")}</dl>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">${n.map(([e, t]) => `<dt class="text-slate-400">${P(e)}</dt><dd class="break-words text-slate-100">${P(t)}</dd>`).join("")}</dl>
     </div>`;
 }
-function X(e) {
-	let t = O[e.group], n = e.level === null, i = n ? 100 : Math.max(0, Math.min(100, e.level ?? 0)), a = L(e), o = e.lastChanged ? new Date(e.lastChanged).toLocaleString("de-DE") : "", s = J(e), c = [e.area, e.device ? e.name : ""].filter((e) => e !== "").join(" · ");
+function Z(e) {
+	let t = k[e.group], n = e.level === null, i = n ? 100 : Math.max(0, Math.min(100, e.level ?? 0)), a = R(e), o = e.lastChanged ? new Date(e.lastChanged).toLocaleString("de-DE") : "", s = Y(e), c = [e.area, e.device ? e.name : ""].filter((e) => e !== "").join(" · ");
 	return `
   <article tabindex="0"
     class="group relative flex flex-col gap-3 rounded-2xl border ${t.card} bg-slate-900/60 p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/60">
-    ${Y(e)}
+    ${X(e)}
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0">
-        <h3 class="truncate text-sm font-semibold text-slate-100">${N(s)}</h3>
-        ${c ? `<p class="mt-0.5 truncate text-xs text-slate-400">${N(c)}</p>` : ""}
-        <p class="mt-0.5 truncate font-mono text-[11px] text-slate-500">${N(e.entityId)}</p>
+        <h3 class="truncate text-sm font-semibold text-slate-100">${P(s)}</h3>
+        ${c ? `<p class="mt-0.5 truncate text-xs text-slate-400">${P(c)}</p>` : ""}
+        <p class="mt-0.5 truncate font-mono text-[11px] text-slate-500">${P(e.entityId)}</p>
       </div>
-      <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${t.badge}">${N(I(e))}</span>
+      <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${t.badge}">${P(L(e))}</span>
     </div>
 
-    <div class="level-bar" role="img" aria-label="${N(I(e))}">
+    <div class="level-bar" role="img" aria-label="${P(L(e))}">
       <div class="level-bar__fill ${n ? "level-bar__fill--unknown" : t.fill}" style="width:${i}%"></div>
     </div>
 
     <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
       <span class="text-slate-400">${r[e.group]}</span>
-      ${a ? `<span class="text-slate-300">${N(a)}</span>` : ""}
+      ${a ? `<span class="text-slate-300">${P(a)}</span>` : ""}
     </div>
 
-    ${o ? `<p class="text-[11px] text-slate-500">Letzte Aenderung: ${N(o)}</p>` : ""}
+    ${o ? `<p class="text-[11px] text-slate-500">Letzte Aenderung: ${P(o)}</p>` : ""}
   </article>`;
 }
-function Z(e) {
+function Q(e) {
 	let t = g(e.items, e.filter), n = "mt-4 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-sm text-slate-300";
 	return e.items.length === 0 ? `<section data-role="grid" class="${n}">
       Keine Batterie-Entitaeten gefunden. AllBattery sucht nach Entitaeten mit
       <code class="rounded bg-slate-800 px-1.5 py-0.5 text-xs">device_class: battery</code>.
-    </section>` : t.length === 0 ? `<section data-role="grid" class="${n}">Kein Eintrag passt zum aktuellen Filter.</section>` : `<section data-role="grid" class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">${t.map(X).join("")}</section>`;
+    </section>` : t.length === 0 ? `<section data-role="grid" class="${n}">Kein Eintrag passt zum aktuellen Filter.</section>` : `<section data-role="grid" class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">${t.map(Z).join("")}</section>`;
 }
-function Q() {
+function $() {
 	return "\n  <footer class=\"border-t border-slate-800 py-6\">\n    <div class=\"mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 text-xs text-slate-500\">\n      <span>AllBattery &middot; MIT-Lizenz</span>\n      <span>Zugangsdaten bleiben lokal im Browser - es werden keine Daten an Dritte gesendet.</span>\n      <a class=\"ml-auto text-slate-400 transition hover:text-slate-200\" href=\"https://github.com/Grantii/AllBattery\" target=\"_blank\" rel=\"noopener noreferrer\">Projekt auf GitHub</a>\n    </div>\n  </footer>";
 }
 //#endregion
 //#region src/panel.ts
-var $ = class {
+var ee = class {
 	hass;
 	meta = {};
 	metaLoaded = !1;
@@ -548,7 +548,7 @@ var $ = class {
 		let t = await this.hass.callApi("POST", "template", { template: _ });
 		return this.meta = v(String(t)), this.metaLoaded = !0, this.meta;
 	}
-}, ee = ["allbattery-panel", "ha-panel-allbattery"], te = class extends HTMLElement {
+}, te = ["allbattery-panel", "ha-panel-allbattery"], ne = class extends HTMLElement {
 	shadow;
 	hassObject;
 	panelConfig = {};
@@ -633,7 +633,7 @@ var $ = class {
 	}
 	render() {
 		let e = this.shadow.querySelector("[data-role=\"app\"]");
-		e && (e.innerHTML = W(this.view()));
+		e && (e.innerHTML = G(this.view()));
 	}
 	updateGrid() {
 		let e = this.shadow.querySelector("[data-role=\"grid\"]");
@@ -642,7 +642,7 @@ var $ = class {
 			return;
 		}
 		let t = document.createElement("div");
-		t.innerHTML = Z(this.view());
+		t.innerHTML = Q(this.view());
 		let n = t.firstElementChild;
 		n && e.replaceWith(n);
 	}
@@ -653,7 +653,7 @@ var $ = class {
 			kind: "loading",
 			message: "Lade Batterien ..."
 		}, this.render();
-		let t = this.source ?? new $(e);
+		let t = this.source ?? new ee(e);
 		this.source = t;
 		try {
 			let e = await b(t, {
@@ -742,8 +742,8 @@ var $ = class {
 		});
 	};
 };
-for (let e of ee) try {
-	customElements.get(e) || customElements.define(e, te);
+for (let e of te) try {
+	customElements.get(e) || customElements.define(e, ne);
 } catch (t) {
 	console.error(`AllBattery: Element "${e}" konnte nicht registriert werden.`, t);
 }

@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Grantii/AllBattery/main/custom_components/allbattery/brand/dark_logo.png">
-    <img src="https://raw.githubusercontent.com/Grantii/AllBattery/main/custom_components/allbattery/brand/logo.png" alt="AllBattery" width="420">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Grantii/AllBattery/main/custom_components/allbattery/brand/dark_icon.png">
+    <img src="https://raw.githubusercontent.com/Grantii/AllBattery/main/custom_components/allbattery/brand/icon.png" alt="AllBattery" width="200">
   </picture>
 </p>
 
@@ -111,18 +111,21 @@ Das Logo liegt in zwei Varianten im Repo und wird automatisch verwendet:
 
 | Datei | Groesse | Verwendung |
 | --- | --- | --- |
-| `custom_components/allbattery/brand/icon.png` | 256 × 256 | Integration (Einstellungen → Geraete & Dienste), HACS-Kachel |
-| `custom_components/allbattery/brand/icon@2x.png` | 512 × 512 | hDPI-Variante des Icons |
-| `custom_components/allbattery/brand/logo.png` | 844 × 256 | helles Design (Badge + Wortmarke) |
-| `custom_components/allbattery/brand/dark_logo.png` | 844 × 256 | dunkles Design |
-| `public/favicon.svg`, `public/favicon.png`, `public/apple-touch-icon.png` | 48 / 180 px | Browser-Tab und iOS-Homescreen der Web-App |
+| `custom_components/allbattery/brand/icon.png` | 256 × 256 | helles Design: Integration (Einstellungen → Geraete & Dienste), HACS-Kachel |
+| `custom_components/allbattery/brand/icon@2x.png` | 512 × 512 | hDPI-Variante |
+| `custom_components/allbattery/brand/dark_icon.png` | 256 × 256 | dunkles Design (Logo in Weiss) |
+| `custom_components/allbattery/brand/dark_icon@2x.png` | 512 × 512 | hDPI-Variante dunkel |
+| `public/favicon.png`, `public/apple-touch-icon.png` | 48 / 180 px | Browser-Tab und iOS-Homescreen der Web-App |
+| `src/logo.ts` | Data-URI | Logo in der Kopfzeile von Panel und Web-App |
 
-- **Eigenes Logo einsetzen:** die Dateien einfach unter denselben Namen und Groessen
-  ersetzen - Home Assistant (ab Version 2026.3) und die Web-App nutzen sie sofort.
-  Fuer Home Assistant gilt: quadratisches Icon, Logo mit kuerzester Seite 128-256 px
-  (hDPI 256-512 px), PNG mit Transparenz.
-- **Neu erzeugen:** `npm run brand` (erzeugt das Platzhalter-Logo, benoetigt
-  Windows/PowerShell 7).
+- **Eigenes Logo einsetzen:** `assets/Logo.png` durch das eigene Logo ersetzen
+  (quadratisch, schwarzes Artwork auf weissem oder transparentem Hintergrund) und
+  `npm run brand` ausfuehren (Windows/PowerShell 7). Das Skript erzeugt daraus alle
+  Dateien - inklusive der weissen Variante fuer das dunkle Design.
+- **Warum kein `logo.png`?** Das Logo ist quadratisch - laut Home-Assistant-Brand-Guidelines
+  werden dann nur die Icon-Dateien abgelegt, Home Assistant nutzt das Icon automatisch als
+  Logo-Fallback. Ab Home Assistant 2026.3 laedt HA lokale Brand-Bilder aus
+  `custom_components/<domain>/brand/` direkt (aeltere Versionen ignorieren den Ordner).
 - **Sidebar-Symbol** des Panels: `SIDEBAR_ICON` in `custom_components/allbattery/const.py`
   (Material Design Icon, Standard `mdi:battery-heart-variant`).
 
