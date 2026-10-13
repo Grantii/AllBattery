@@ -1,4 +1,5 @@
 # AllBattery
+<<<<<<< HEAD
 
 Ein Home-Assistant-Dashboard mit Fokus auf das **Monitoring von Batterien**.
 
@@ -45,6 +46,9 @@ npm run dev
 
 MIT-Lizenz.
 
+=======
+HA Battery Watchdog – A lightweight web application to monitor all Home Assistant battery levels in one place, featuring state-based grouping, filtering, and simple discharge forecasting.
+>>>>>>> 46c602acf7bea5e79ca23f8e3ac630bd01cc8fa2
 # 🔋 HA Battery Watchdog
 
 **HA Battery Watchdog** ist eine Web-Anwendung zur zentralen Überwachung aller Akku- und Batteriezustände deiner Home-Assistant-Geräte. 
@@ -64,4 +68,8 @@ Die App aggregiert automatisch alle Entitäten mit der `battery`-Geräteklasse, 
 1. Repository klonen:
    ```bash
    git clone [https://github.com/DEIN-USERNAME/HA-Battery-Watchdog.git](https://github.com/DEIN-USERNAME/HA-Battery-Watchdog.git)
+<<<<<<< HEAD
    cd HA-Battery-Watchdog
+=======
+   cd HA-Battery-Watchdog
+>>>>>>> 46c602acf7bea5e79ca23f8e3ac630bd01cc8fa2
