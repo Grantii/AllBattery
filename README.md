@@ -84,6 +84,23 @@ npm run typecheck  # nur Typpruefung
 Der Build verwendet `base: './'` und laeuft daher auch in einem Unterordner
 (z. B. GitHub Pages).
 
+## Hinweise und Fehlersuche
+
+**Raeume (Bereiche):** Die Raumzuordnung wird ueber die Template-API (`POST /api/template`)
+ermittelt. Diese erfordert ein Token mit **Administratorrechten**. Ohne Admin-Token werden die
+Batterien trotzdem vollstaendig angezeigt - nur die Raumangabe bleibt leer.
+
+**CORS:** Die App laeuft im Browser unter einem anderen Origin als Home Assistant. Falls der
+Browser die Anfragen blockiert (CORS-Meldung in der Entwicklerkonsole), trage den Origin der App
+in Home Assistant unter *Einstellungen > System > Netzwerk > HTTP-Server > CORS allowed origins*
+ein, zum Beispiel:
+
+- `http://localhost:5173` (Entwicklung)
+- `https://<dein-benutzer>.github.io` (GitHub Pages)
+
+**Keine Batterien gefunden?** Gesucht werden Entitaeten mit `device_class: battery`
+(zusaetzlich Sensoren in Prozent mit "battery"/"batterie"/"akku" im Entity-Namen).
+
 ## Lizenz
 
 MIT – siehe [LICENSE](LICENSE).
