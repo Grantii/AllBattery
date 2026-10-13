@@ -488,7 +488,7 @@ var q = class {
 		}
 		return this.areas = r, this.areasLoaded = !0, r;
 	}
-}, J = ["allbattery", "ha-panel-allbattery"], Y = class extends HTMLElement {
+}, J = ["allbattery-panel", "ha-panel-allbattery"], Y = class extends HTMLElement {
 	shadow;
 	hassObject;
 	panelConfig = {};
@@ -682,5 +682,9 @@ var q = class {
 		});
 	};
 };
-for (let e of J) customElements.get(e) || customElements.define(e, Y);
+for (let e of J) try {
+	customElements.get(e) || customElements.define(e, Y);
+} catch (t) {
+	console.error(`AllBattery: Element "${e}" konnte nicht registriert werden.`, t);
+}
 //#endregion

@@ -97,11 +97,15 @@ class HassDataSource implements DataSource {
 }
 
 /**
- * Name des Custom Elements. Home Assistant erzeugt das Element mit dem `name`
- * aus der panel_custom-Konfiguration; aeltere Varianten nutzen das Praefix
- * `ha-panel-`. Wir registrieren beide Schreibweisen.
+ * Namen der Custom Elements. WICHTIG: Ein Custom-Element-Name MUSS einen
+ * Bindestrich enthalten ("allbattery" allein ist ungueltig und laesst
+ * customElements.define() mit einem SyntaxError abbrechen).
+ *
+ * Home Assistant erzeugt das Element mit dem `webcomponent_name` aus der
+ * Integration ("allbattery-panel"); aeltere Varianten nutzen das Praefix
+ * `ha-panel-`. Beide werden registriert.
  */
-const ELEMENT_NAMES = ['allbattery', 'ha-panel-allbattery'] as const;
+const ELEMENT_NAMES = ['allbattery-panel', 'ha-panel-allbattery'] as const;
 
 interface PanelInfo {
   config?: AllBatteryPanelConfig;
@@ -370,7 +374,12 @@ class AllBatteryPanel extends HTMLElement {
 }
 
 for (const name of ELEMENT_NAMES) {
-  if (!customElements.get(name)) {
-    customElements.define(name, AllBatteryPanel);
+  try {
+    if (!customElements.get(name)) {
+      customElements.define(name, AllBatteryPanel);
+    }
+  } catch (error) {
+    // Ein ungueltiger Name darf die Registrierung der anderen nicht verhindern.
+    console.error(`AllBattery: Element "${name}" konnte nicht registriert werden.`, error);
   }
 }

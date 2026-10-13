@@ -9,14 +9,18 @@ DOMAIN: Final = "allbattery"
 # Adresse des Sidebar-Panels: /allbattery
 URL_PATH: Final = "allbattery"
 
-# Basis-URL der mitgelieferten Frontend-Dateien: /allbattery/allbattery.js
-STATIC_URL: Final = "/allbattery"
+# Basis-URL der mitgelieferten Frontend-Dateien.
+# WICHTIG: bewusst NICHT "/allbattery" - das ist die Adresse des Panels, und ein
+# StaticResource auf derselben URL wuerde die Panel-Seite mit HTTP 403 belegen.
+STATIC_URL: Final = "/allbattery-files"
 FRONTEND_DIR: Final = "frontend"
 JS_FILE: Final = "allbattery.js"
 MODULE_URL: Final = f"{STATIC_URL}/{JS_FILE}"
 
-# Name des Custom Elements, das das Panel rendert (siehe src/panel.ts)
-WEBCOMPONENT: Final = "allbattery"
+# Name des Custom Elements (siehe src/panel.ts).
+# WICHTIG: Ein Custom-Element-Name MUSS einen Bindestrich enthalten - "allbattery"
+# allein ist ungueltig und laesst customElements.define() abbrechen.
+WEBCOMPONENT: Final = "allbattery-panel"
 
 SIDEBAR_TITLE: Final = "Batterien"
 SIDEBAR_ICON: Final = "mdi:battery-heart-variant"

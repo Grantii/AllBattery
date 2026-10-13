@@ -73,8 +73,29 @@ und `homeassistant`.
 ## Manuelles Panel (ohne Integration)
 
 `npm run build:panel` erzeugt `custom_components/allbattery/frontend/allbattery.js`. Die Datei
-kann nach `<HA-Config>/www/allbattery.js` kopiert und per `panel_custom` eingebunden werden
-(Beispiel in der README).
+kann nach `<HA-Config>/www/allbattery.js` kopiert und per `panel_custom` eingebunden werden:
+
+```yaml
+panel_custom:
+  # Der Element-Name MUSS einen Bindestrich enthalten (siehe src/panel.ts)
+  - name: allbattery-panel
+    sidebar_title: Batterien
+    sidebar_icon: mdi:battery-heart-variant
+    url_path: allbattery
+    module_url: /local/allbattery.js
+    config:
+      refresh_seconds: 60
+      forecast: true
+      forecast_hours: 24
+```
+
+**Zwei Stolperfallen** (beide schon einmal aufgetreten):
+
+1. Ein Custom-Element-Name ohne Bindestrich (`allbattery`) ist ungueltig -
+   `customElements.define()` bricht dann mit einem SyntaxError ab und das Panel bleibt schwarz.
+2. Die Panel-Adresse (`url_path`) darf nicht mit einem statischen Pfad kollidieren: ein
+   `StaticResource` auf derselben URL belegt die Panel-Seite mit HTTP 403. Die Integration
+   liefert ihre Dateien deshalb unter `/allbattery-files/` aus.
 
 ## Releases
 
