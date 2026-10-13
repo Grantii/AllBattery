@@ -4,6 +4,8 @@
 und Akkus spezialisiert. Es findet automatisch alle Batterie-Entitäten deiner Installation,
 gruppiert sie nach Zustand und schätzt, wie lange ein Akku noch hält.
 
+**Sprache:** **Deutsch** · [English](README.en.md)
+
 ## Funktionen
 
 - **Automatische Erkennung** aller Batterie-Entitäten (`device_class: battery`) – sowohl Sensoren
