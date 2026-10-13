@@ -1,11 +1,6 @@
-import {
-  countGroups,
-  isBatteryState,
-  samplesFromHistory,
-  toBatteryItem,
-  withForecast,
-} from './battery';
+import { countGroups } from './battery';
 import { HassError, HomeAssistantClient } from './hass';
+import { loadBatteries } from './loader';
 import {
   DEFAULT_SETTINGS,
   clearSettings,
@@ -37,6 +32,7 @@ let refreshTimer: number | undefined;
 
 function view(): AppView {
   return {
+    mode: 'standalone',
     settings: state.settings,
     filter: state.filter,
     items: state.items,
@@ -91,42 +87,7 @@ function scheduleRefresh(): void {
   }
 }
 
-async function mapWithConcurrency<T>(
-  items: T[],
-  limit: number,
-  worker: (item: T) => Promise<void>,
-): Promise<void> {
-  const queue = [...items];
-  const runners = Array.from({ length: Math.max(1, Math.min(limit, queue.length)) }, async () => {
-    for (;;) {
-      const next = queue.shift();
-      if (next === undefined) return;
-      await worker(next);
-    }
-  });
-  await Promise.all(runners);
-}
-
-async function loadForecasts(client: HomeAssistantClient, items: BatteryItem[]): Promise<void> {
-  state.forecastLoading = true;
-  render();
-
-  const levelItems = items.filter((item) => item.kind === 'level');
-  await mapWithConcurrency(levelItems, 4, async (item) => {
-    try {
-      const entries = await client.getHistory(item.entityId, state.settings.forecastHours);
-      const index = state.items.findIndex((entry) => entry.entityId === item.entityId);
-      if (index >= 0) {
-        state.items[index] = withForecast(state.items[index], samplesFromHistory(entries));
-      }
-    } catch {
-      // Die Prognose ist optional: Fehler (z. B. fehlende Historie) werden ignoriert.
-    }
-  });
-
-  state.forecastLoading = false;
-  render();
-}
+// Datenladen und Prognose laufen ueber src/loader.ts (gemeinsam mit dem HACS-Panel).
 
 async function connect(): Promise<void> {
   if (!isConfigured()) {
@@ -142,31 +103,24 @@ async function connect(): Promise<void> {
 
   try {
     const message = await client.testConnection();
-    const states = await client.getStates();
+    state.forecastLoading = state.settings.showForecast;
 
-    let areas: Record<string, string> = {};
-    try {
-      areas = await client.getAreas();
-    } catch {
-      areas = {};
-    }
-
-    const items = states
-      .filter(isBatteryState)
-      .map((entity) => toBatteryItem(entity, areas[entity.entity_id] ?? ''));
-
-    state.items = items;
-    state.lastUpdate = new Date().toLocaleTimeString('de-DE');
-    setStatus('ok', message === 'API running.' ? 'Verbunden' : message);
-    render();
-
-    if (state.settings.showForecast && items.length > 0) {
-      void loadForecasts(client, items);
-    }
+    await loadBatteries(client, {
+      forecast: state.settings.showForecast,
+      forecastHours: state.settings.forecastHours,
+      onUpdate: (items) => {
+        state.items = [...items];
+        state.lastUpdate = new Date().toLocaleTimeString('de-DE');
+        setStatus('ok', message === 'API running.' ? 'Verbunden' : message);
+        render();
+      },
+    });
   } catch (error) {
     state.items = [];
     state.lastUpdate = '';
     setStatus('error', error instanceof HassError ? error.message : 'Unerwarteter Fehler.');
+  } finally {
+    state.forecastLoading = false;
     render();
   }
 

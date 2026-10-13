@@ -9,6 +9,8 @@ export interface StatusInfo {
 
 /** Gesamter Zustand, den die UI zum Rendern benoetigt. */
 export interface AppView {
+  /** `standalone` = eigene Seite mit Verbindungsformular, `panel` = HA-Sidebar-Panel. */
+  mode: 'standalone' | 'panel';
   settings: ConnectionSettings;
   filter: FilterState;
   items: BatteryItem[];
@@ -136,7 +138,11 @@ function renderHeader(view: AppView): string {
         ${statusBadge(view.status)}
         ${view.lastUpdate ? `<span class="text-xs text-slate-400">Stand: ${escapeHtml(view.lastUpdate)}</span>` : ''}
         <button type="button" data-action="refresh" class="${HEADER_BUTTON_CLASS}">Aktualisieren</button>
-        <button type="button" data-action="toggle-settings" class="${HEADER_BUTTON_CLASS}">Einstellungen</button>
+        ${
+          view.mode === 'standalone'
+            ? `<button type="button" data-action="toggle-settings" class="${HEADER_BUTTON_CLASS}">Einstellungen</button>`
+            : ''
+        }
       </div>
     </div>
   </header>`;
@@ -160,11 +166,13 @@ function renderSummary(view: AppView): string {
 }
 
 export function renderApp(view: AppView): string {
+  const isPanel = view.mode === 'panel';
   const configured = view.settings.url.trim() !== '' && view.settings.token.trim() !== '';
-  const showConnection = !configured || view.settingsOpen;
-  const body = configured
-    ? renderSummary(view) + renderControls(view) + renderBatteryGrid(view)
-    : renderIntro();
+  const showConnection = !isPanel && (!configured || view.settingsOpen);
+  const body =
+    isPanel || configured
+      ? renderSummary(view) + renderControls(view) + renderBatteryGrid(view)
+      : renderIntro();
 
   return `
     ${renderHeader(view)}

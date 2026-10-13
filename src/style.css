@@ -50,3 +50,16 @@ body {
   outline: 2px solid rgb(56 189 248);
   outline-offset: 2px;
 }
+
+/*
+ * Nur fuer das HACS-Sidebar-Panel relevant: Der Shadow Root bekommt kein <body>,
+ * deshalb bringen wir Hintergrund und Groesse am Host-Element unter.
+ * In der eigenstaendigen App ist diese Regel wirkungslos.
+ */
+:host {
+  display: block;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(2 6 23);
+  color: rgb(241 245 249);
+}

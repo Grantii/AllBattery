@@ -44,19 +44,26 @@ Beides wird ausschließlich lokal im Browser gespeichert und gehört **nicht** i
 AllBattery/
 ├─ src/
 │  ├─ main.ts       # Controller: Verbindung, Auto-Refresh, Events
+│  ├─ panel.ts      # HACS-Sidebar-Panel (Custom Element, Shadow DOM)
 │  ├─ hass.ts       # Home-Assistant-REST-Client (States, History, Template)
+│  ├─ loader.ts     # Gemeinsames Datenladen (REST oder Frontend-Objekt)
 │  ├─ battery.ts    # Erkennung, Gruppierung, Sortierung der Batterien
 │  ├─ forecast.ts   # Lineare Restlaufzeit-Prognose
 │  ├─ storage.ts    # localStorage (URL, Token, Filter)
 │  ├─ ui.ts         # Rendering (Dashboard, Karten, Filter)
 │  ├─ types.ts      # Typdefinitionen
 │  └─ style.css     # Tailwind + Basis-Styles
+├─ scripts/
+│  └─ deploy-to-ha.mjs  # Build nach <HA-Config>/www/allbattery kopieren
 ├─ docs/
 │  └─ PROMPT.md     # Anforderungsbeschreibung / Projekt-Prompt
+├─ hacs.json        # HACS-Manifest
+├─ AllBattery.js    # gebautes HACS-Plugin (npm run build:panel)
 ├─ index.html
 ├─ package.json
 ├─ tsconfig.json
-├─ vite.config.ts
+├─ vite.config.ts        # Standalone-Build
+├─ vite.config.panel.ts  # HACS-Plugin-Build
 ├─ README.md
 ├─ LICENSE
 └─ .gitignore
@@ -122,6 +129,41 @@ kein Mixed-Content-Problem - und die Home-Assistant-URL wird automatisch erkannt
    *Einstellungen > System > Netzwerk > HTTP-Server > CORS allowed origins* eingetragen werden.
 4. Achtung: Laeuft Home Assistant ueber HTTPS, muss auch die App ueber HTTPS laufen - sonst
    blockiert der Browser das Einbetten (Mixed Content).
+
+### Variante C - als HACS-Dashboard-Plugin (Sidebar-Panel)
+
+Die App laeuft dann als eigenes Sidebar-Panel und nutzt die angemeldete
+Home-Assistant-Sitzung: **kein Token, kein CORS** und Live-Aktualisierungen direkt aus dem
+Frontend (die Rechte entsprechen dem angemeldeten Benutzer).
+
+1. HACS installieren (falls noch nicht vorhanden).
+2. In HACS: **Frontend** > Drei-Punkte-Menue > **Benutzerdefinierte Repositories** >
+   `https://github.com/Grantii/AllBattery` > Kategorie **Dashboard** > *Hinzufuegen*.
+3. AllBattery in HACS installieren. Der genaue Ablageort (`config/www/community/...`) wird in
+   HACS angezeigt.
+4. In `configuration.yaml` eintragen:
+
+   ```yaml
+   panel_custom:
+     - name: allbattery
+       sidebar_title: Batterien
+       sidebar_icon: mdi:battery-heart-variant
+       url_path: allbattery
+       module_url: /hacsfiles/AllBattery/AllBattery.js
+       config:
+         refresh_seconds: 60    # 0 = kein Auto-Refresh
+         forecast: true         # Prognose-Modul
+         forecast_hours: 24     # Betrachteter Zeitraum in Stunden
+   ```
+
+5. Home Assistant neu starten - danach erscheint **Batterien** in der Seitenleiste.
+
+> Fuer die Raum-Zuordnung wird ein Konto mit Administratorrechten benoetigt (Template-API).
+> Ohne Admin-Rechte werden die Batterien trotzdem vollstaendig angezeigt, nur die Raumangabe
+> bleibt leer.
+
+**Selbst bauen:** `npm run build:panel` erzeugt die Datei `AllBattery.js` im Repo-Root
+(eine einzige, in sich geschlossene Datei mit eingebettetem CSS).
 
 ### Long-Lived Access Token erstellen
 
