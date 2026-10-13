@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Grantii/AllBattery/main/custom_components/allbattery/brand/dark_logo.png">
+    <img src="https://raw.githubusercontent.com/Grantii/AllBattery/main/custom_components/allbattery/brand/logo.png" alt="AllBattery" width="420">
+  </picture>
+</p>
+
 # AllBattery
 
 **AllBattery** ist ein Dashboard für Home Assistant, das sich auf die Überwachung von Batterien
@@ -97,6 +104,27 @@ App eingegeben; beides bleibt lokal im Browser gespeichert.
   *Einstellungen → System → Netzwerk → HTTP-Server → CORS allowed origins* eintragen, zum
   Beispiel `http://localhost:5173` oder `https://<benutzer>.github.io`.
 - **Panel bleibt leer:** Browser-Konsole prüfen und Home Assistant einmal neu starten.
+
+## Logo / Branding
+
+Das Logo liegt in zwei Varianten im Repo und wird automatisch verwendet:
+
+| Datei | Groesse | Verwendung |
+| --- | --- | --- |
+| `custom_components/allbattery/brand/icon.png` | 256 × 256 | Integration (Einstellungen → Geraete & Dienste), HACS-Kachel |
+| `custom_components/allbattery/brand/icon@2x.png` | 512 × 512 | hDPI-Variante des Icons |
+| `custom_components/allbattery/brand/logo.png` | 844 × 256 | helles Design (Badge + Wortmarke) |
+| `custom_components/allbattery/brand/dark_logo.png` | 844 × 256 | dunkles Design |
+| `public/favicon.svg`, `public/favicon.png`, `public/apple-touch-icon.png` | 48 / 180 px | Browser-Tab und iOS-Homescreen der Web-App |
+
+- **Eigenes Logo einsetzen:** die Dateien einfach unter denselben Namen und Groessen
+  ersetzen - Home Assistant (ab Version 2026.3) und die Web-App nutzen sie sofort.
+  Fuer Home Assistant gilt: quadratisches Icon, Logo mit kuerzester Seite 128-256 px
+  (hDPI 256-512 px), PNG mit Transparenz.
+- **Neu erzeugen:** `npm run brand` (erzeugt das Platzhalter-Logo, benoetigt
+  Windows/PowerShell 7).
+- **Sidebar-Symbol** des Panels: `SIDEBAR_ICON` in `custom_components/allbattery/const.py`
+  (Material Design Icon, Standard `mdi:battery-heart-variant`).
 
 ## Lizenz
 

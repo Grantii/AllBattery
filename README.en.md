@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Grantii/AllBattery/main/custom_components/allbattery/brand/dark_logo.png">
+    <img src="https://raw.githubusercontent.com/Grantii/AllBattery/main/custom_components/allbattery/brand/logo.png" alt="AllBattery" width="420">
+  </picture>
+</p>
+
 # AllBattery
 
 **AllBattery** is a dashboard for Home Assistant that specialises in monitoring batteries. It
@@ -99,6 +106,27 @@ app; both stay in your browser's local storage.
   *Settings → System → Network → HTTP server → CORS allowed origins*, for example
   `http://localhost:5173` or `https://<user>.github.io`.
 - **Panel stays empty:** check the browser console and restart Home Assistant once.
+
+## Logo / branding
+
+The logo ships in two variants and is picked up automatically:
+
+| File | Size | Used for |
+| --- | --- | --- |
+| `custom_components/allbattery/brand/icon.png` | 256 × 256 | integration page (Settings → Devices & Services), HACS tile |
+| `custom_components/allbattery/brand/icon@2x.png` | 512 × 512 | hDPI variant of the icon |
+| `custom_components/allbattery/brand/logo.png` | 844 × 256 | light theme (badge + wordmark) |
+| `custom_components/allbattery/brand/dark_logo.png` | 844 × 256 | dark theme |
+| `public/favicon.svg`, `public/favicon.png`, `public/apple-touch-icon.png` | 48 / 180 px | browser tab and iOS home screen of the web app |
+
+- **Use your own logo:** simply replace the files, keeping the same names and sizes -
+  Home Assistant (2026.3 and newer) and the web app pick them up immediately.
+  For Home Assistant: square icon, logo with a shortest side of 128-256 px
+  (hDPI 256-512 px), PNG with transparency.
+- **Regenerate:** `npm run brand` (creates the placeholder logo, requires
+  Windows/PowerShell 7).
+- **Sidebar icon** of the panel: `SIDEBAR_ICON` in `custom_components/allbattery/const.py`
+  (Material Design icon, default `mdi:battery-heart-variant`).
 
 ## License
 

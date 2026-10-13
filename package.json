@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "build:panel": "tsc --noEmit && vite build --config vite.config.panel.ts",
     "build:all": "npm run build && npm run build:panel",
+    "brand": "pwsh -NoProfile -File scripts/generate-brand-images.ps1",
     "deploy:ha": "npm run build && node scripts/deploy-to-ha.mjs"
   },
   "devDependencies": {
