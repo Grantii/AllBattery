@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/*
+ * AllBattery - globale Styles.
+ * Dark Mode ist der Standard (siehe index.html: <html class="dark">).
+ */
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+}
+
+/* Fortschrittsbalken der Batteriekarten */
+.level-bar {
+  position: relative;
+  width: 100%;
+  height: 0.625rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background-color: rgb(30 41 59);
+}
+
+.level-bar__fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 300ms ease-out;
+}
+
+/* Unbekannter Zustand: schraffierter Balken */
+.level-bar__fill--unknown {
+  width: 100% !important;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgb(71 85 105) 0 6px,
+    rgb(51 65 85) 6px 12px
+  );
+}
+
+/* Fokus-Stile fuer Tastaturbedienung */
+:where(button, input, select, a):focus-visible {
+  outline: 2px solid rgb(56 189 248);
+  outline-offset: 2px;
+}

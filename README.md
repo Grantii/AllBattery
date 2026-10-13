@@ -32,16 +32,57 @@ Beim ersten Start werden Home-Assistant-URL und ein Long-Lived Access Token abge
 Beides wird ausschließlich lokal im Browser gespeichert und gehört **nicht** ins Repository
 (siehe `.gitignore`).
 
+## Tech-Stack
+
+- **Vite** (Dev-Server und Build)
+- **TypeScript** (strict)
+- **Tailwind CSS v4** (UI im Dark Mode)
+
 ## Projektstruktur
 
 ```
 AllBattery/
+├─ src/
+│  ├─ main.ts       # Controller: Verbindung, Auto-Refresh, Events
+│  ├─ hass.ts       # Home-Assistant-REST-Client (States, History, Template)
+│  ├─ battery.ts    # Erkennung, Gruppierung, Sortierung der Batterien
+│  ├─ forecast.ts   # Lineare Restlaufzeit-Prognose
+│  ├─ storage.ts    # localStorage (URL, Token, Filter)
+│  ├─ ui.ts         # Rendering (Dashboard, Karten, Filter)
+│  ├─ types.ts      # Typdefinitionen
+│  └─ style.css     # Tailwind + Basis-Styles
 ├─ docs/
-│  └─ PROMPT.md   # Anforderungsbeschreibung / Projekt-Prompt
+│  └─ PROMPT.md     # Anforderungsbeschreibung / Projekt-Prompt
+├─ index.html
+├─ package.json
+├─ tsconfig.json
+├─ vite.config.ts
 ├─ README.md
 ├─ LICENSE
 └─ .gitignore
 ```
+
+## Datenschutz
+
+AllBattery ist eine reine Browser-Anwendung (statische Seite):
+
+- Home-Assistant-URL und Token werden **nur** im `localStorage` des Browsers gespeichert und
+  ausschliesslich an die von dir angegebene Adresse gesendet.
+- Kein Backend, keine Telemetrie, keine Cookies von Dritten.
+- Zugangsdaten gehoeren **nicht** ins Repository (siehe `.gitignore`).
+
+## Entwicklung
+
+```bash
+npm install
+npm run dev        # Dev-Server auf http://localhost:5173
+npm run build      # Typpruefung + Produktions-Build nach dist/
+npm run preview    # Build lokal testen
+npm run typecheck  # nur Typpruefung
+```
+
+Der Build verwendet `base: './'` und laeuft daher auch in einem Unterordner
+(z. B. GitHub Pages).
 
 ## Lizenz
 
