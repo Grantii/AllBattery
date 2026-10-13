@@ -1,216 +1,90 @@
 # AllBattery
 
-**AllBattery** ist eine Web-Anwendung zur zentralen Überwachung aller Batterie- und Akkuzustände
-deiner Home-Assistant-Geräte. Die App aggregiert automatisch alle Entitäten mit der
-`battery`-Geräteklasse, gliedert sie übersichtlich nach Ladezustand und liefert eine
-vorausschauende Prognose der verbleibenden Restlaufzeit.
+**AllBattery** ist ein Dashboard für Home Assistant, das sich auf die Überwachung von Batterien
+und Akkus spezialisiert. Es findet automatisch alle Batterie-Entitäten deiner Installation,
+gruppiert sie nach Zustand und schätzt, wie lange ein Akku noch hält.
 
-## Features
+## Funktionen
 
-- **Home-Assistant-Integration:** Anbindung über die REST-API (optional WebSocket) mit
-  Long-Lived Access Token; URL und Token werden nur lokal im Browser (LocalStorage) gespeichert.
-- **Status-Gruppierung:** Automatische Einsortierung in *Kritisch* (< 10 %), *Warnung* (< 20 %),
-  *Gut* (> 20 %) und *Unbekannt/Offline*.
-- **Prognose-Modul:** Schätzung der verbleibenden Akkulaufzeit auf Basis historischer
-  Entladetrends (`/api/history/period`) bzw. einer linearen Restlaufzeit-Prognose.
-- **Filter & Sortierung:** Schnelles Finden von Geräten nach Name, Raum oder Ladestand.
-- **Modernes UI:** Responsives Dashboard im Dark Mode mit Fortschrittsbalken, Icons und
-  Farbkodierung.
+- **Automatische Erkennung** aller Batterie-Entitäten (`device_class: battery`) – sowohl Sensoren
+  mit Ladestand in Prozent als auch Binary-Sensoren („Batterie schwach“).
+- **Gruppierung nach Zustand** mit Farbkodierung und Fortschrittsbalken:
+  Kritisch (< 10 %), Warnung (< 20 %), Gut (≥ 20 %), Unbekannt/Offline.
+- **Restlaufzeit-Prognose:** aus dem Entladetrend der letzten Stunden wird geschätzt, wie lange
+  der Akku noch reicht (z. B. „Reicht ca. 3 Tage 4 h“) – inklusive „lädt gerade“ und „stabil“.
+- **Filter und Sortierung** nach Ladestand, Name oder Raum, mit Suchfeld über Name, Raum und
+  Entity-ID.
+- **Raumzuordnung:** zu jeder Batterie wird der zugehörige Bereich aus Home Assistant angezeigt.
+- **Automatische Aktualisierung** in einstellbarem Intervall – im Panel zusätzlich live, sobald
+  sich Zustände in Home Assistant ändern.
+- **Dark Mode** und responsives Layout für Desktop, Tablet und Handy.
+- **Ohne Zugangsdaten im Panel-Betrieb:** als Sidebar-Panel nutzt AllBattery die angemeldete
+  Home-Assistant-Sitzung – kein Token, keine CORS-Einstellungen nötig.
 
-## Quickstart
+## Installation
 
-```bash
-git clone https://github.com/Grantii/AllBattery.git
-cd AllBattery
-npm install
-npm run dev
-```
+### Empfohlen: als Sidebar-Panel über HACS
 
-## Konfiguration
+1. HACS installieren (falls noch nicht vorhanden).
+2. In HACS: **Integrationen** → Drei-Punkte-Menü → **Benutzerdefinierte Repositories** →
+   `https://github.com/Grantii/AllBattery` → Kategorie **Integration** → *Hinzufügen*.
+3. AllBattery in HACS installieren.
+4. In Home Assistant: *Einstellungen → Geräte & Dienste → **Integration hinzufügen** →
+   **AllBattery***.
 
-Beim ersten Start werden Home-Assistant-URL und ein Long-Lived Access Token abgefragt.
-Beides wird ausschließlich lokal im Browser gespeichert und gehört **nicht** ins Repository
-(siehe `.gitignore`).
+Danach erscheint **Batterien** in der Seitenleiste – fertig.
 
-## Tech-Stack
+### Alternativ: als Webseite in ein Dashboard einbinden
 
-- **Vite** (Dev-Server und Build)
-- **TypeScript** (strict)
-- **Tailwind CSS v4** (UI im Dark Mode)
-
-## Projektstruktur
-
-```
-AllBattery/
-├─ src/
-│  ├─ main.ts       # Controller: Verbindung, Auto-Refresh, Events
-│  ├─ panel.ts      # HACS-Sidebar-Panel (Custom Element, Shadow DOM)
-│  ├─ hass.ts       # Home-Assistant-REST-Client (States, History, Template)
-│  ├─ loader.ts     # Gemeinsames Datenladen (REST oder Frontend-Objekt)
-│  ├─ battery.ts    # Erkennung, Gruppierung, Sortierung der Batterien
-│  ├─ forecast.ts   # Lineare Restlaufzeit-Prognose
-│  ├─ storage.ts    # localStorage (URL, Token, Filter)
-│  ├─ ui.ts         # Rendering (Dashboard, Karten, Filter)
-│  ├─ types.ts      # Typdefinitionen
-│  └─ style.css     # Tailwind + Basis-Styles
-├─ scripts/
-│  └─ deploy-to-ha.mjs  # Build nach <HA-Config>/www/allbattery kopieren
-├─ docs/
-│  └─ PROMPT.md     # Anforderungsbeschreibung / Projekt-Prompt
-├─ custom_components/
-│  └─ allbattery/   # HACS-Integration: Panel-Registrierung + ausgeliefertes Bundle
-├─ hacs.json        # HACS-Manifest
-├─ index.html
-├─ package.json
-├─ tsconfig.json
-├─ vite.config.ts        # Standalone-Build
-├─ vite.config.panel.ts  # HACS-Plugin-Build
-├─ README.md
-├─ LICENSE
-└─ .gitignore
-```
-
-## Datenschutz
-
-AllBattery ist eine reine Browser-Anwendung (statische Seite):
-
-- Home-Assistant-URL und Token werden **nur** im `localStorage` des Browsers gespeichert und
-  ausschliesslich an die von dir angegebene Adresse gesendet.
-- Kein Backend, keine Telemetrie, keine Cookies von Dritten.
-- Zugangsdaten gehoeren **nicht** ins Repository (siehe `.gitignore`).
-
-## Entwicklung
-
-```bash
-npm install
-npm run dev         # Dev-Server auf http://localhost:5173
-npm run build       # Typpruefung + Produktions-Build nach dist/ (Standalone-App)
-npm run build:panel # Frontend-Bundle der HACS-Integration
-npm run build:all   # beides
-npm run preview     # Build lokal testen
-npm run typecheck   # nur Typpruefung
-```
-
-Der Build verwendet `base: './'` und laeuft daher auch in einem Unterordner
-(z. B. GitHub Pages).
-
-## Einbindung in Home Assistant
-
-### Variante A - die App von Home Assistant ausliefern lassen (empfohlen)
-
-Dann laeuft die App unter **derselben Herkunft (Origin)** wie Home Assistant: kein CORS,
-kein Mixed-Content-Problem - und die Home-Assistant-URL wird automatisch erkannt.
-
-1. Build erzeugen und in den `www`-Ordner der Home-Assistant-Konfiguration kopieren:
+1. Build erstellen und in den `www`-Ordner der Home-Assistant-Konfiguration kopieren:
 
    ```bash
    npm run deploy:ha -- "\\<server>\config\www"   # Windows (UNC-Pfad)
    npm run deploy:ha -- /config/www               # Linux / HAOS-Add-on-Terminal
    ```
 
-   Das Skript baut die App und kopiert sie nach `<HA-Config>/www/allbattery/`.
-   Alternativ den Inhalt von `dist/` manuell dorthin kopieren.
+2. Aufruf: `http://<dein-home-assistant>:8123/local/allbattery/`
+3. Im Dashboard eine Karte **Webseite** mit dieser URL hinzufügen.
 
-2. Aufruf im Browser: `http://<dein-home-assistant>:8123/local/allbattery/`
+In dieser Variante werden die Home-Assistant-URL und ein Long-Lived Access Token direkt in der
+App eingegeben; beides bleibt lokal im Browser gespeichert.
 
-3. In Home Assistant einbinden - entweder als eigenes Sidebar-Panel:
+## Einstellungen
 
-   *Einstellungen > Dashboards > Dashboard hinzufuegen > "Neues Dashboard von Grund auf"*
-   > Modus **Panel** > Karte **Webseite** > URL `http://<dein-home-assistant>:8123/local/allbattery/`
+| Einstellung | Standard | Wo |
+|---|---|---|
+| Auto-Refresh in Sekunden (0 = aus) | 60 | Panel: *Geräte & Dienste → AllBattery → Konfigurieren*<br>Web: im Formular |
+| Prognose-Modul | an | wie oben |
+| Prognose-Zeitraum in Stunden | 24 | wie oben |
 
-   oder als Karte in ein bestehendes Dashboard (*Karte hinzufuegen > Webseite*).
+## Wie die Auswertung funktioniert
 
-> Hinweis: Dateien unter `www/` sind ohne Anmeldung abrufbar. Die App selbst enthaelt aber keine
-> Zugangsdaten - URL und Token werden erst im Browser eingegeben und nur dort gespeichert.
+- **Erkennung:** Entitäten mit `device_class: battery`. Zusätzlich werden Sensoren berücksichtigt,
+  die in Prozent messen und deren Name auf „battery“, „batterie“ oder „akku“ hindeutet.
+- **Gruppen:** Kritisch < 10 %, Warnung < 20 %, Gut ≥ 20 %. Entitäten, die nicht verfügbar sind
+  (`unknown`/`unavailable`), erscheinen unter *Unbekannt/Offline*.
+- **Prognose:** Über den gewählten Zeitraum wird eine Ausgleichsgerade (Methode der kleinsten
+  Quadrate) durch die Verlaufswerte gelegt. Aus ihrer Steigung ergibt sich die Entladerate in
+  Prozent pro Stunde; die Restlaufzeit ist der aktuelle Ladestand geteilt durch diese Rate.
+- **Räume:** Die Raumzuordnung wird über die Template-API ermittelt. Dafür wird ein Benutzer bzw.
+  Token mit **Administratorrechten** benötigt. Ohne Admin-Rechte werden die Batterien trotzdem
+  vollständig angezeigt – nur die Raumangabe bleibt leer.
 
-### Variante B - extern hosten (z. B. GitHub Pages)
+## Fehlersuche
 
-1. Build ueber GitHub Pages veroeffentlichen (Workflow `.github/workflows/pages.yml`, danach im
-   Repo unter *Settings > Pages > Source: GitHub Actions* aktivieren).
-2. Karte **Webseite** mit `https://<benutzer>.github.io/AllBattery/` hinzufuegen.
-3. Da die App dann von einer anderen Herkunft laeuft, muss ihr Origin in Home Assistant unter
-   *Einstellungen > System > Netzwerk > HTTP-Server > CORS allowed origins* eingetragen werden.
-4. Achtung: Laeuft Home Assistant ueber HTTPS, muss auch die App ueber HTTPS laufen - sonst
-   blockiert der Browser das Einbetten (Mixed Content).
-
-### Variante C - als HACS-Integration (Sidebar-Panel, ganz ohne YAML)
-
-Die App laeuft dann als eigenes Sidebar-Panel und nutzt die angemeldete
-Home-Assistant-Sitzung: **kein Token, kein CORS, kein `configuration.yaml`-Eintrag** und
-Live-Aktualisierungen direkt aus dem Frontend (Rechte = angemeldeter Benutzer).
-
-1. HACS installieren (falls noch nicht vorhanden).
-2. In HACS: **Integrationen** > Drei-Punkte-Menue > **Benutzerdefinierte Repositories** >
-   `https://github.com/Grantii/AllBattery` > Kategorie **Integration** > *Hinzufuegen*.
-3. AllBattery in HACS installieren.
-4. In Home Assistant: *Einstellungen > Geraete & Dienste > **Integration hinzufuegen** >
-   **AllBattery***. Danach erscheint **Batterien** in der Seitenleiste.
-
-Die Panel-Optionen (Auto-Refresh, Prognose-Zeitraum) lassen sich jederzeit aendern unter
-*Einstellungen > Geraete & Dienste > AllBattery > **Konfigurieren***.
-
-> Fuer die Raum-Zuordnung wird ein Konto mit Administratorrechten benoetigt (Template-API).
-> Ohne Admin-Rechte werden die Batterien trotzdem vollstaendig angezeigt, nur die Raumangabe
-> bleibt leer.
-
-**Manuell ohne HACS-Integration** (wenn du `panel_custom` bevorzugst):
-
-```bash
-npm run build:panel        # erzeugt custom_components/allbattery/frontend/allbattery.js
-```
-
-Die Datei nach `<HA-Config>/www/allbattery.js` kopieren und eintragen:
-
-```yaml
-panel_custom:
-  - name: allbattery
-    sidebar_title: Batterien
-    sidebar_icon: mdi:battery-heart-variant
-    url_path: allbattery
-    module_url: /local/allbattery.js
-    config:
-      refresh_seconds: 60
-      forecast: true
-      forecast_hours: 24
-```
-
-
-### Long-Lived Access Token erstellen
-
-In Home Assistant auf das eigene Profil klicken (unten links) > Tab **Sicherheit** >
-*Long-Lived Access Tokens* > **Token erstellen**. Diesen Token in AllBattery eintragen.
-
-## Hinweise und Fehlersuche
-
-**Raeume (Bereiche):** Die Raumzuordnung wird ueber die Template-API (`POST /api/template`)
-ermittelt. Diese erfordert ein Token mit **Administratorrechten**. Ohne Admin-Token werden die
-Batterien trotzdem vollstaendig angezeigt - nur die Raumangabe bleibt leer.
-
-**CORS:** Die App laeuft im Browser unter einem anderen Origin als Home Assistant. Falls der
-Browser die Anfragen blockiert (CORS-Meldung in der Entwicklerkonsole), trage den Origin der App
-in Home Assistant unter *Einstellungen > System > Netzwerk > HTTP-Server > CORS allowed origins*
-ein, zum Beispiel:
-
-- `http://localhost:5173` (Entwicklung)
-- `https://<dein-benutzer>.github.io` (GitHub Pages)
-
-**Keine Batterien gefunden?** Gesucht werden Entitaeten mit `device_class: battery`
-(zusaetzlich Sensoren in Prozent mit "battery"/"batterie"/"akku" im Entity-Namen).
-
-## Veroeffentlichen (Releases)
-
-HACS zeigt als Version den Tag des **letzten GitHub-Releases** an. Fuer ein Release:
-
-```bash
-npm run build:all                                  # Standalone + HACS-Bundle bauen
-git add -A && git commit -m "release: v0.1.0"
-git tag v0.1.0
-git push origin v0.1.0                             # explizit, damit beide Server den Tag bekommen
-```
-
-Danach auf GitHub unter *Releases > Draft a new release* den Tag `v0.1.0` auswaehlen und
-veroeffentlichen. Ohne Release verwendet HACS den Commit-Hash als Version.
+- **Keine Batterien sichtbar?** AllBattery sucht Entitäten mit `device_class: battery`. Prüfe in
+  Home Assistant unter *Entwicklerwerkzeuge → Zustände*, ob deine Batterie-Sensoren dieses
+  Attribut tragen.
+- **Räume bleiben leer:** Der verwendete Benutzer hat keine Administratorrechte (siehe oben).
+- **Web-Variante lädt keine Daten (CORS):** Den Origin der App in Home Assistant unter
+  *Einstellungen → System → Netzwerk → HTTP-Server → CORS allowed origins* eintragen, zum
+  Beispiel `http://localhost:5173` oder `https://<benutzer>.github.io`.
+- **Panel bleibt leer:** Browser-Konsole prüfen und Home Assistant einmal neu starten.
 
 ## Lizenz
 
 MIT – siehe [LICENSE](LICENSE).
+
+---
+
+*Entwicklung, Projektstruktur und Release-Hinweise: siehe [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)*
